@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <stdint.h>
+
 #include <kernel/vgatty.h>
+#include <kernel/portio.h>
 #include <kcdefines.h>
 
 /* CONSTANTS */
@@ -11,6 +13,16 @@ static volatile uint16_t * const VGA_CHAR_BUF = (uint16_t * const)0xB8000;
 
 static int vga_position = 0;
 static int vga_color = 0x07;
+
+/* UTILITY FUNCTIONS */
+
+static void vgatty_move_cursor(uint16_t pos)
+{
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, (uint8_t)(pos & 0xFF));
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (uint8_t)((pos & 0xFF00) >> 8));
+}
 
 /* WRITING UNFORMATTED DATA TO VGATTY */
 
@@ -80,6 +92,7 @@ void vgatty_setposition(int row, int col)
     if (VGA_ROW_OK(row) && VGA_COL_OK(col)) {
         vga_position = VGA_POSITION(row, col);
     }
+    vgatty_move_cursor(vga_position);
 }
 void vgatty_setcursor(UNUSED int cursor) {
     /* Unimplemented */

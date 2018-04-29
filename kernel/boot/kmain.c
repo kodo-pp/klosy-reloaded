@@ -4,6 +4,7 @@
 
 #include <kernel/power.h>
 #include <kernel/vgatty.h>
+#include <kernel/portio.h>
 
 extern uint8_t vga_color;
 

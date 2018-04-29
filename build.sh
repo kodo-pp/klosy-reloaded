@@ -9,11 +9,22 @@ LD="i686-elf-gcc"
 
 CFLAGS="-Wall -Wextra -std=c99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding"
 CXXFLAGS="-Wall -Wextra -std=c99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -fno-exceptions -fno-rtti"
-ASFLAGS=""
+ASFLAGS="-I kernel/include/asm"
 LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib"
 
 LIBS="-lgcc"
 LDFLAGS="${LDFLAGS} ${LIBS}"
+
+FLAGS=""
+
+# Please, don't replace 'a' with 'x' here (I mean the first character of the string)
+if [ "a${KR_DEBUG}" == 'ayes' ]; then
+    FLAGS="${FLAGS} -g"
+fi
+
+CFLAGS="${CFLAGS} ${FLAGS}"
+CXXFLAGS="${CXXFLAGS} ${FLAGS}"
+ASFLAGS="${ASFLAGS} ${FLAGS}"
 
 function run_command() {
     echo "RUN" "$@" >&2
