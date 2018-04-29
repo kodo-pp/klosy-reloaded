@@ -1,0 +1,11 @@
+*.o
+*.so
+*.d
+*.dll
+*.exe
+*.lib
+*.a
+
+*.iso
+
+core.*
