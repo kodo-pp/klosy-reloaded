@@ -4,11 +4,12 @@
 kernel_name="klosy-reloaded.elf"
 iso_name="klosy-reloaded.iso"
 
-echo 'Removing object files...'
+echo -e '\e[1;33m[ RM ]  \e[0mRemoving object files'
 find . -name '*.o' -delete
-echo 'Done'
-rm -vf "${iso_name}"
+echo -e "\e[1;33m[ RM ]  \e[0mRemoving ${iso_name}"
+rm -f "${iso_name}"
 
 if [ "x$1" == "x--no-keep-kernel" ]; then
-     rm -vf "${kernel_name}"
- fi
+    echo -e "\e[1;33m[ RM ]  \e[0mRemoving ${kernel_name}"
+     rm -f "${kernel_name}"
+fi

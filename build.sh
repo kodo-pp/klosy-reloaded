@@ -27,18 +27,47 @@ CXXFLAGS="${CXXFLAGS} ${FLAGS}"
 ASFLAGS="${ASFLAGS} ${FLAGS}"
 
 function run_command() {
-    echo "RUN" "$@" >&2
+    dump_command "$@"
+    shift
     "$@"
     e="$?"
     if [ "$e" -ne 0 ]; then
-        echo "Error: exit status $e"
+        echo "\e[1;31mError: exit status $e\e[0m"
         kill $$
     fi
 }
 
+function dump_command() {
+    case $1 in
+    cc)
+        echo -ne '\e[1;34m[ CC ]  \e[0m'
+        ;;
+    cxx)
+        echo -ne '\e[1;34m[ C++ ] \e[0m'
+        ;;
+    as)
+        echo -ne '\e[1;34m[ AS ]  \e[0m'
+        ;;
+    link)
+        echo -ne '\e[1;35m[LINK]  \e[0m'
+        ;;
+    esac
+
+    case $1 in
+    cc|cxx|as)
+        # The last function argument, see https://stackoverflow.com/questions/1853946/getting-the-last-argument-passed-to-a-shell-script
+        local src_file="${!#}"
+        echo "$src_file"
+        ;;
+    link)
+        local final_elf="${!#}"
+        echo "-> $final_elf"
+    esac
+}
+
 function build_file() {
     if ! [ -f "$1" ]; then
-        echo "Error: file '$1' not found" >&2
+        echo "\e[1;31mError: file '$1' not found\e[0m" >&2
         kill $$
     fi
 
@@ -48,20 +77,22 @@ function build_file() {
 
     case $1 in
     *.c)
-        run_command "${CC}" ${CFLAGS} -c -o "${objname}" "$1" >&2
+        run_command cc "${CC}" ${CFLAGS} -c -o "${objname}" "$1" >&2
         ;;
     *.C|*.cpp|*.c++)
-        run_command "${CXX}" ${CXXFLAGS} -c -o "${objname}" "$1" >&2
+        run_command cxx "${CXX}" ${CXXFLAGS} -c -o "${objname}" "$1" >&2
         ;;
     *.s|*.S)
-        run_command "${AS}" ${ASFLAGS} -c -o "${objname}" "$1" >&2
+        run_command as "${AS}" ${ASFLAGS} -c -o "${objname}" "$1" >&2
         ;;
     *)
-        echo "Error: unable to build file '$1'" >&2
+        echo -e "\e[1;31mError: unable to build file '$1'\e[0m" >&2
         kill $$
         ;;
     esac
 }
+
+echo -e '\e[1mBuilding...\e[0m'
 
 objects=''
 
@@ -69,4 +100,4 @@ for i in $(find . -regex '.*[.]\(s\|S\|c\|C\|cpp\|c++\)' -type f); do
     objects="${objects} $(build_file "$i")"
 done
 
-run_command "${LD}" ${LDFLAGS} ${objects} -o "${kernel_name}"
+run_command link "${LD}" ${LDFLAGS} ${objects} -o "${kernel_name}"

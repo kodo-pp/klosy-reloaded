@@ -9,7 +9,7 @@ if [ "$1" == "-f" ] || ! [ -f "${kernel_name}" ]; then
 fi
 
 mkdir "${iso_tmp_dir}"
-cp -v "${kernel_name}" "${iso_tmp_dir}"
+cp "${kernel_name}" "${iso_tmp_dir}"
 cd "${iso_tmp_dir}"
 mkdir -p boot/grub
 cd boot/grub
@@ -20,6 +20,8 @@ menuentry "Klosy Reloaded" {
 EOF
 cd ../../..
 
-grub-mkrescue -o "${iso_name}" "${iso_tmp_dir}"
+echo -e "\e[1;35m[GRUB]  \e[0m${iso_tmp_dir} -> ${iso_name}"
+grub-mkrescue -o "${iso_name}" "${iso_tmp_dir}" 2>/dev/null
 
+echo -e "\e[1;33m[ RM ]  \e[0mRemoving ${iso_tmp_dir}"
 rm -rf "${iso_tmp_dir}"
