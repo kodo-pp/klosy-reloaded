@@ -13,15 +13,31 @@ static volatile uint16_t * const VGA_CHAR_BUF = (uint16_t * const)0xB8000;
 
 static int vga_position = 0;
 static int vga_color = 0x07;
+static int vgatty_cursor = -1;
 
-/* UTILITY FUNCTIONS */
+/* CURSOR MANIPULATION FUNCTIONS */
 
-static void vgatty_move_cursor(uint16_t pos)
+void vgatty_move_cursor(uint16_t pos)
 {
     outb(0x3D4, 0x0F);
     outb(0x3D5, (uint8_t)(pos & 0xFF));
     outb(0x3D4, 0x0E);
     outb(0x3D5, (uint8_t)((pos & 0xFF00) >> 8));
+}
+
+static void vgatty_enable_cursor(uint8_t cursor_start, uint8_t cursor_end)
+{
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
+
+	outb(0x3D4, 0x0B);
+	outb(0x3D5, (inb(0x3E0) & 0xE0) | cursor_end);
+}
+
+static void vgatty_disable_cursor()
+{
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, 0x20);
 }
 
 /* WRITING UNFORMATTED DATA TO VGATTY */
@@ -54,6 +70,7 @@ void vgatty_putfbyte(uint16_t ch)
 {
     VGA_CHAR_BUF[vga_position] = ch;
     vga_position = (vga_position + 1) % (VGA_WIDTH * VGA_HEIGHT);
+    vgatty_move_cursor(vga_position);
 }
 void vgatty_putfchar(uint16_t ch)
 {
@@ -94,14 +111,17 @@ void vgatty_setposition(int row, int col)
     }
     vgatty_move_cursor(vga_position);
 }
-void vgatty_setcursor(UNUSED int cursor) {
-    /* Unimplemented */
-    return;
+void vgatty_setcursor(int cursor) {
+    if (cursor == 0) {
+        vgatty_disable_cursor();
+    } else {
+        vgatty_enable_cursor(14, 15); /* Bottom of the character cell */
+    }
+    vgatty_cursor = cursor;
 }
 
-int  vgatty_getcursor(void) {
-    /* Unimplemented */
-    return 1;
+int vgatty_getcursor(void) {
+    return vgatty_cursor == 0 ? 0 : 1;
 }
 void vgatty_getposition(int *row, int *col)
 {
