@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+/* Wrappers of assembly instructions in and out with different operand length */
+
 void outb(uint16_t port, uint8_t  val);
 void outw(uint16_t port, uint16_t val);
 void outl(uint16_t port, uint32_t val);

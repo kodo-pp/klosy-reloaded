@@ -7,8 +7,11 @@
 #include <kernel/portio.h>
 #include <kernel/multiboot.h>
 
-extern uint8_t vga_color;
-
+/*
+ * Temporary utility function, should be removed when something like printf is implemented.
+ * Converts a size_t to string, w/o any checks, so it's definitely unsafe and should
+ * be replaced.
+ */
 void to_string(size_t n, char *s)
 {
     size_t idx = 0;
@@ -25,22 +28,24 @@ void to_string(size_t n, char *s)
     s[idx] = 0;
 }
 
+/*
+ * Heap memory beginning, symbol comes from linker script. Should be moved into
+ * the memory management module.
+ */
 extern size_t heap_memory;
 
+/**
+ * Entry point to high-level part of kernel (C is considered a high-level prog. language)
+ */
 void kmain(struct multiboot_info *mbt)
 {
-    /*
-    char *str = "01234567890123456789012345678901234567890123456789\n";
-    for (int i = 0; i < 24; ++i) {
-        vgatty_putstr(str + i);
-    }
-    */
-
-    /* uint32_t axcx = 0, bxdx = 0; */
-    /* detect_memory(&axcx, &bxdx); */
-
+    /* Print available memory size */
     char buf[256];
 
+    /* I know, at the moment printing is VERY ugly, but it will be changed to
+     * a couple of generic functions like write or printf, instead of working
+     * directly with a tty
+     */
     vgatty_setcolor(0x0F);
     vgatty_putstr("Memory information provided? ");
     vgatty_setcolor(0x07);
@@ -77,18 +82,6 @@ void kmain(struct multiboot_info *mbt)
     vgatty_putstr(buf);
     vgatty_putstr(" MiB\n");
 
-
-    /*
-    to_string(axcx, buf);
-    vgatty_putstr("eax = ecx = ");
-    vgatty_putstr(buf);
-    vgatty_putstr("\n");
-
-    to_string(bxdx, buf);
-    vgatty_putstr("ebx = edx = ");
-    vgatty_putstr(buf);
-    vgatty_putstr("\n");
-    */
-
+    /* OK, we're done and system can be halted */
     halt();
 }
