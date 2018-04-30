@@ -125,7 +125,7 @@ Build kernel: `./build.sh`
 
 Create bootable ISO image with GRUB: `./iso.sh` or `./iso.sh -f` if you want to re-build kernel
 
-Launck KR in qemu: `./qemu.sh` or `./qemu.sh -f` if you want to re-build kernel
+Launch KR in qemu: `./qemu.sh` or `./qemu.sh -f` if you want to re-build kernel
 
 Clean up: `./clean.sh` or `./clean.sh --no-keep-kernel` if you want to remove klosy-reloaded.elf
 
