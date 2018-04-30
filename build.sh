@@ -32,7 +32,7 @@ function run_command() {
     "$@"
     e="$?"
     if [ "$e" -ne 0 ]; then
-        echo "\e[1;31mError: exit status $e\e[0m"
+        echo -e "\e[1;31mError: exit status $e\e[0m"
         kill $$
     fi
 }
