@@ -1,7 +1,6 @@
 /*
- * Bootstrap assembly. All code except this comment and 'kmain' function name
- * (this name was 'kernel_main')
- * is taken from the Bare Bones tutorial (https://wiki.osdev.org/Bare_bones).
+ * Bootstrap assembly. All code except this comment is taken from the Bare Bones
+ * tutorial (https://wiki.osdev.org/Bare_bones), but may be altered.
  * Coding style has not been changed for this file.
  */
 
@@ -82,6 +81,14 @@ _start:
 	C++ features such as global constructors and exceptions will require
 	runtime support to work as well.
 	*/
+
+
+	/*
+	Pushing %ebx allows us to access memory map via multiboot-capable bootloader
+	(see https://wiki.osdev.org/Detecting_Memory_(x86)#Memory_Map_Via_GRUB)
+	TODO: check magic value (%eax)
+	*/
+	push %ebx
 
 	/*
 	Enter the high-level kernel. The ABI requires the stack is 16-byte

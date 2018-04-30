@@ -7,8 +7,8 @@ CXX="i686-elf-g++"
 AS="i686-elf-as"
 LD="i686-elf-gcc"
 
-CFLAGS="-Wall -Wextra -std=c99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding"
-CXXFLAGS="-Wall -Wextra -std=c99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -fno-exceptions -fno-rtti"
+CFLAGS="-Wall -Wextra -std=gnu99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding"
+CXXFLAGS="-Wall -Wextra -std=gnu++11 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -fno-exceptions -fno-rtti"
 ASFLAGS="-I kernel/include/asm"
 LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib"
 

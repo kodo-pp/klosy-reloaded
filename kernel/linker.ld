@@ -1,6 +1,7 @@
 /*
- * Linker script. All code except this comment
- * is taken from the Bare Bones tutorial (https://wiki.osdev.org/Bare_bones)
+ * Linker script. All code except this comment (and except code below the comment
+ * starting with 'The compiler may') is taken from the Bare Bones tutorial
+ * (https://wiki.osdev.org/Bare_bones).
  * Coding style has not been changed for this file.
  */
 
@@ -46,4 +47,6 @@
 
  	/* The compiler may produce other sections, by default it will put them in
  	   a segment with the same name. Simply add stuff here as needed. */
- }
+
+    "heap_memory" = .;
+}

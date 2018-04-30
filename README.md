@@ -38,6 +38,8 @@ Also some code was taken from different tutorials and pages:
 
 - [VGA cursor manipulations](https://wiki.osdev.org/Text_Mode_Cursor)
 
+- [Multiboot header](https://www.gnu.org/software/grub/manual/multiboot/html_node/multiboot_002eh.html)
+
 ## Used and Distributed along with Klosy Reloaded
 Here is a complete list of any data, source code, binary or in any other form, included in the distribution
 and not being a part of Klosy Reloaded.
