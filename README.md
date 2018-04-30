@@ -19,7 +19,7 @@ An attempt to rewrite Klosy from scracth due to its bugs and костыли. Yes
 Some bootstrap project structure was taken from [Bare Bones tutorial](https://wiki.osdev.org/Bare_bones)
 on [OSDev Wiki](https://wiki.osdev.org).
 
-# License
+## License
 
 Klosy Reloaded is distributed under conditions of the [MIT License](https://mit-license.org), see LICENSE file.
 This license only applies to Klosy Reloaded itself, not to any other programs or other files distributed along
@@ -27,15 +27,18 @@ with Klosy Reloaded. A complete list of programs, source code files or any other
 included in this distribution and are not a part of Klosy Reloaded can be found in the *Used and Distributed
 along with Klosy Reloaded* section.
 
-# Based on
+## Building
+See BUILDING.md
+
+## Based on
 Klosy Reloaded uses code from [Bare Bones tutorial](https://wiki.osdev.org/Bare_bones) on
 [OSDev Wiki](https://wiki.osdev.org).
 
-# Used and Distributed along with Klosy Reloaded
+## Used and Distributed along with Klosy Reloaded
 Here is a complete list of any data, source code, binary or in any other form, included in the distribution
 and not being a part of Klosy Reloaded.
 
-(list is empty for now, as nothing is distributed along with KR) 
+(list is empty for now, as nothing is distributed along with KR)
 
 **WARNING**: This OS normally uses GNU GRUB, which is distributed under GNU GPL. Simply speaking, this
 license requires me to publish the source code of GNU GRUB along with my OS source code. However, I am too
