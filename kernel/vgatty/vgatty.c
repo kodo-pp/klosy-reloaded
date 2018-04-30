@@ -77,6 +77,7 @@ void vgatty_putfchar(uint16_t ch)
     if (VGACHR(ch) == '\n') {
         size_t delta = VGA_WIDTH - vga_position % VGA_WIDTH;
         vga_position = (vga_position + delta) % (VGA_WIDTH * VGA_HEIGHT);
+        vgatty_move_cursor(vga_position);
     } else {
         vgatty_putfbyte(ch);
     }
