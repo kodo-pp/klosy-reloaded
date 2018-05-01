@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include <stdio.h>
+#include <convert.h>
 
 #include <kernel/power.h>
 #include <kernel/vgatty.h>
@@ -63,11 +64,10 @@ void kmain(struct multiboot_info *mbt)
         halt();
     }
 
-    to_string(mbt->mem_lower, buf);
     vgatty_setcolor(0x0F);
     writes("Lower memory: ");
     vgatty_setcolor(0x07);
-    writes(buf);
+    writes(size_t_to_str(buf, (size_t)mbt->mem_lower));
     puts(" KiB");
 
     to_string(mbt->mem_upper >> 10, buf);
@@ -176,6 +176,8 @@ void kmain(struct multiboot_info *mbt)
         }
     }
     writes(" | ");
+
+    puts(int_to_str(buf, 0x80000000));
 
     puts("Halted.");
     /* OK, we're done and system can be halted */

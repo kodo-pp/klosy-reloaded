@@ -7,10 +7,10 @@ CXX="i686-elf-g++"
 AS="i686-elf-as"
 LD="i686-elf-gcc"
 
-CFLAGS="-Wall -Wextra -std=gnu99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -O0"
+CFLAGS="-Wall -Wextra -std=gnu99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -O0 -static-libgcc"
 CXXFLAGS="-Wall -Wextra -std=gnu++11 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -fno-exceptions -fno-rtti"
 ASFLAGS="-I kernel/include/asm"
-LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib"
+LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib -static"
 
 LIBS="-lgcc"
 LDFLAGS="${LDFLAGS} ${LIBS}"
@@ -100,4 +100,4 @@ for i in $(find . -regex '.*[.]\(s\|S\|c\|C\|cpp\|c++\)' -type f); do
     objects="${objects} $(build_file "$i")"
 done
 
-run_command link "${LD}" ${LDFLAGS} ${objects} -o "${kernel_name}"
+run_command link "${LD}" ${objects} ${LDFLAGS} -o "${kernel_name}"
