@@ -6,6 +6,7 @@
 #include <kernel/vgatty.h>
 #include <kernel/portio.h>
 #include <kernel/multiboot.h>
+#include <kernel/memory.h>
 
 /*
  * Temporary utility function, should be removed when something like printf is implemented.
@@ -27,12 +28,6 @@ void to_string(size_t n, char *s)
     }
     s[idx] = 0;
 }
-
-/*
- * Heap memory beginning, symbol comes from linker script. Should be moved into
- * the memory management module.
- */
-extern size_t heap_memory;
 
 /**
  * Entry point to high-level part of kernel (C is considered a high-level prog. language)
@@ -80,8 +75,100 @@ void kmain(struct multiboot_info *mbt)
     vgatty_putstr("Memory limit: ");
     vgatty_setcolor(0x07);
     vgatty_putstr(buf);
-    vgatty_putstr(" MiB\n");
+    vgatty_putstr(" MiB\n\n");
 
+    vgatty_putstr("Heap memory begins at ");
+    to_string((size_t)heap_memory, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+    init_kmem(mbt->mem_upper * 1024 + 1024 * 1024);
+    vgatty_putstr("Memory initialized\n");
+    void *allocated1 = kmalloc(10);
+    vgatty_putstr("Memory[1] allocated\n");
+    vgatty_putstr("Pointer value is ");
+    to_string((size_t)allocated1, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+    void *allocated2 = kmalloc(300);
+    vgatty_putstr("Memory[2] allocated\n");
+    vgatty_putstr("Pointer value is ");
+    to_string((size_t)allocated2, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+    void *allocated3 = kmalloc(10);
+    vgatty_putstr("Memory[3] allocated\n");
+    vgatty_putstr("Pointer value is ");
+    to_string((size_t)allocated3, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+    int val = kfree(allocated2) + 100;
+    vgatty_putstr("Memory[2] freed\n");
+    vgatty_putstr("Return value + 100 is ");
+    to_string((size_t)val, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+    val = kfree(allocated2) + 100;
+    vgatty_putstr("Memory[2] freed again\n");
+    vgatty_putstr("Return value + 100 is ");
+    to_string((size_t)val, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+    val = kfree(NULL) + 100;
+    vgatty_putstr("NULL freed\n");
+    vgatty_putstr("Return value + 100 is ");
+    to_string((size_t)val, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+    for (size_t i = 0; i < 16; ++i) {
+        if (is_block_free(i)) {
+            vgatty_putstr("F"); /* Free */
+        } else {
+            vgatty_putstr("U"); /* Used */
+        }
+    }
+    vgatty_putstr(" | ");
+
+    void *allocated4 = kmalloc(200);
+    vgatty_putstr("Memory[4] allocated\n");
+    vgatty_putstr("Pointer value is ");
+    to_string((size_t)allocated4, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+    for (size_t i = 0; i < 16; ++i) {
+        if (is_block_free(i)) {
+            vgatty_putstr("F"); /* Free */
+        } else {
+            vgatty_putstr("U"); /* Used */
+        }
+    }
+    vgatty_putstr(" | ");
+
+    void *allocated5 = kmalloc(300);
+    vgatty_putstr("Memory[5] allocated\n");
+    vgatty_putstr("Pointer value is ");
+    to_string((size_t)allocated5, buf);
+    vgatty_putstr(buf);
+    vgatty_putstr("\n");
+
+
+    for (size_t i = 0; i < 16; ++i) {
+        if (is_block_free(i)) {
+            vgatty_putstr("F"); /* Free */
+        } else {
+            vgatty_putstr("U"); /* Used */
+        }
+    }
+    vgatty_putstr(" | ");
+
+    vgatty_putstr("Halted.\n");
     /* OK, we're done and system can be halted */
     halt();
 }
