@@ -16,8 +16,11 @@
 
 /*
  * Heap memory beginning, symbol comes from linker script.
+ * Actually no, after 2 hours of debugging I realised that the POINTER TO THIS
+ * FUCKING VARIABLE IS THE VALUE I NEED, NOT THIS SHITTY VARIABLE ITSELF!
+ * But anybody please TELL ME HOW IT FUCKING WORKED BEFORE?
  */
-extern size_t heap_memory;
+extern const size_t heap_memory;
 /*extern size_t memory_limit;*/
 
 /** allocates a chunk of memory for the kernel needs */
@@ -25,7 +28,7 @@ void *kmalloc(size_t size);
 /** deallocates memory allocated with kmalloc */
 int kfree(void *ptr);
 /** tells whether the block of memory is allocated or not */
-bool is_block_free(size_t offset);
+int is_block_free(size_t offset);
 
 /** Sets the variable memory_limit to specified value */
 void set_memory_limit(size_t lim);

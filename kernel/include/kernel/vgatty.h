@@ -41,6 +41,11 @@
 
 /* FUNCTIONS */
 
+/** Clears the terminal, sets position to (0, 0) */
+void vgatty_clear(void);
+/** Clears the terminal, sets position to (0, 0) and color to 0x07, enables cursor */
+void vgatty_reset(void);
+
 /** Puts raw default-colored byte in the terminal, w/o any checks on '\n' or similar stuff. */
 void vgatty_putbyte(char ch);
 /** Puts default-colored char in the terminal, checking if it is a special char (e.g. '\n') */

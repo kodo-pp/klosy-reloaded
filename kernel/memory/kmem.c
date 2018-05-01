@@ -42,7 +42,7 @@ static size_t get_meta(size_t offset)
     return *meta_ptr_by_offset(offset);
 }
 
-bool is_block_free(size_t offset)
+int is_block_free(size_t offset)
 {
     if (offset >= usable_blocks_count) {
         return false; /* TODO: maybe halt system because of internal error */
@@ -124,7 +124,7 @@ void *get_memory_limit(void)
 
 void init_kmem(size_t mem_lim)
 {
-    heap_blocks = ALIGN(void *, heap_memory, KMEM_BLOCK_SIZE);
+    heap_blocks = ALIGN(void *, &heap_memory, KMEM_BLOCK_SIZE);
     set_memory_limit(mem_lim);
     if (memory_limit < heap_blocks)
     {

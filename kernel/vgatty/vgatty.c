@@ -7,6 +7,7 @@
 
 /* CONSTANTS */
 
+/* Constant pointer to non-constant volatile data */
 static volatile uint16_t * const VGA_CHAR_BUF = (uint16_t * const)0xB8000;
 
 /* STATE VARIABLES */
@@ -14,6 +15,23 @@ static volatile uint16_t * const VGA_CHAR_BUF = (uint16_t * const)0xB8000;
 static int vga_position = 0;
 static int vga_color = 0x07;
 static int vgatty_cursor = -1;
+
+/* CLEAR AND RESET FUNCTIONS */
+
+void vgatty_clear(void)
+{
+    for (size_t i = 0; i < VGA_WIDTH * VGA_HEIGHT; ++i) {
+        *(VGA_CHAR_BUF + i) = VGANFCHAR('\0');
+    }
+    vgatty_setposition(0, 0);
+}
+
+void vgatty_reset(void)
+{
+    vgatty_clear();
+    vgatty_setcursor(1);
+    vgatty_setcolor(0x07);
+}
 
 /* CURSOR MANIPULATION FUNCTIONS */
 

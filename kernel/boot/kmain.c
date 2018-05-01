@@ -1,12 +1,14 @@
-#include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #include <kernel/power.h>
 #include <kernel/vgatty.h>
 #include <kernel/portio.h>
 #include <kernel/multiboot.h>
+#include <kernel/init.h>
 #include <kernel/memory.h>
+#include <kernel/panic.h>
 
 /*
  * Temporary utility function, should be removed when something like printf is implemented.
@@ -34,8 +36,11 @@ void to_string(size_t n, char *s)
  */
 void kmain(struct multiboot_info *mbt)
 {
-    /* Print available memory size */
     char buf[256];
+
+    init_modules(mbt);
+    
+    /* Print available memory size */
 
     /* I know, at the moment printing is VERY ugly, but it will be changed to
      * a couple of generic functions like write or printf, instead of working
@@ -78,12 +83,13 @@ void kmain(struct multiboot_info *mbt)
     vgatty_putstr(" MiB\n\n");
 
     vgatty_putstr("Heap memory begins at ");
-    to_string((size_t)heap_memory, buf);
+    to_string((size_t)(&heap_memory), buf);
     vgatty_putstr(buf);
     vgatty_putstr("\n");
 
     init_kmem(mbt->mem_upper * 1024 + 1024 * 1024);
     vgatty_putstr("Memory initialized\n");
+
     void *allocated1 = kmalloc(10);
     vgatty_putstr("Memory[1] allocated\n");
     vgatty_putstr("Pointer value is ");
