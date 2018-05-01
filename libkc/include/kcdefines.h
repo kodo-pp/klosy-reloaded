@@ -1,5 +1,5 @@
-#ifndef LIBKC_KCDEFINES
-#define LIBKC_KCDEFINES
+#ifndef LIBKC_KCDEFINES_H
+#define LIBKC_KCDEFINES_H
 
 #define NORETURN __attribute__((noreturn))
 #define UNUSED __attribute__((unused))
@@ -16,4 +16,4 @@
 /* Value used to represent an error */
 #define SIZE_T_ERROR ((size_t)(-1))
 
-#endif /* end of include guard: LIBKC_KCDEFINES */
+#endif /* end of include guard: LIBKC_KCDEFINES_H */
