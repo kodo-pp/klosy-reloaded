@@ -33,6 +33,35 @@ void vgatty_reset(void)
     vgatty_setcolor(0x07);
 }
 
+/* UTILITY FUNCTIONS: PARTIAL CLEANING */
+static void vgatty_clear_range(size_t begin, size_t end)
+{
+    if (end > VGA_WIDTH * VGA_HEIGHT) {
+        end = VGA_WIDTH * VGA_HEIGHT;
+    }
+    /* Always false */
+    /*
+    if (begin < 0) {
+        begin = 0;
+    }
+    */
+    if (begin >= end) {
+        return;
+    }
+
+    for (size_t i = begin; i < end; ++i) {
+        VGA_CHAR_BUF[i] = VGANFCHAR('\0');
+    }
+}
+
+static void vgatty_clear_line(size_t line)
+{
+    if (!VGA_ROW_OK((int)line)) {
+        return;
+    }
+    vgatty_clear_range(line * VGA_WIDTH, (line + 1) * VGA_WIDTH);
+}
+
 /* CURSOR MANIPULATION FUNCTIONS */
 
 void vgatty_move_cursor(uint16_t pos)
@@ -56,6 +85,17 @@ static void vgatty_disable_cursor()
 {
 	outb(0x3D4, 0x0A);
 	outb(0x3D5, 0x20);
+}
+
+/* UTILITY FUNCTION: SCROLLING */
+
+static void vgatty_scroll(void)
+{
+    for (size_t i = 0; i < VGA_WIDTH * (VGA_HEIGHT - 1); ++i) {
+        VGA_CHAR_BUF[i] = VGA_CHAR_BUF[i + VGA_WIDTH];
+    }
+    vgatty_clear_line(VGA_HEIGHT - 1);
+    vgatty_setposition(VGA_HEIGHT - 1, 0);
 }
 
 /* WRITING UNFORMATTED DATA TO VGATTY */
@@ -87,14 +127,21 @@ void vgatty_putdata(char *str, size_t len)
 void vgatty_putfbyte(uint16_t ch)
 {
     VGA_CHAR_BUF[vga_position] = ch;
-    vga_position = (vga_position + 1) % (VGA_WIDTH * VGA_HEIGHT);
+    /* vga_position = (vga_position + 1) % (VGA_WIDTH * VGA_HEIGHT); */
+    ++vga_position;
+    if (vga_position >= VGA_WIDTH * VGA_HEIGHT) {
+        vgatty_scroll();
+    }
     vgatty_move_cursor(vga_position);
 }
 void vgatty_putfchar(uint16_t ch)
 {
     if (VGACHR(ch) == '\n') {
         size_t delta = VGA_WIDTH - vga_position % VGA_WIDTH;
-        vga_position = (vga_position + delta) % (VGA_WIDTH * VGA_HEIGHT);
+        vga_position += delta;
+        if (vga_position >= VGA_WIDTH * VGA_HEIGHT) {
+            vgatty_scroll();
+        }
         vgatty_move_cursor(vga_position);
     } else {
         vgatty_putfbyte(ch);
