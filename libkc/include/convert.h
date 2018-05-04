@@ -11,9 +11,7 @@ unsigned int str_to_uint(const char *s);
 long long str_to_longlong(const char *s);
 unsigned long long str_to_ulonglong(const char *s);
 
-int str_to_int_base(const char *s, int base);
 unsigned int str_to_uint_base(const char *s, int base);
-long long str_to_longlong_base(const char *s, int base);
 unsigned long long str_to_ulonglong_base(const char *s, int base);
 
 char *int_to_str(char *buf, int n);
@@ -21,9 +19,7 @@ char *uint_to_str(char *buf, unsigned int n);
 char *longlong_to_str(char *buf, long long n);
 char *ulonglong_to_str(char *buf, unsigned long long n);
 
-char *int_to_str_base(char *buf, int n, int base);
 char *uint_to_str_base(char *buf, unsigned int n, int base);
-char *longlong_to_str_base(char *buf, long long n, int base);
 char *ulonglong_to_str_base(char *buf, unsigned long long n, int base);
 
 /* Alias for size_t */

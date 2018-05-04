@@ -177,7 +177,7 @@ void kmain(struct multiboot_info *mbt)
     }
     writes(" | ");
 
-    puts(int_to_str(buf, 0x80000000));
+    puts(ulonglong_to_str_base(buf, 0x7FFFFFFFFFFFFFFFULL, 36));
 
     puts("Halted.");
     /* OK, we're done and system can be halted */
