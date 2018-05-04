@@ -181,6 +181,10 @@ void kmain(struct multiboot_info *mbt)
     writes("17 + -243 = ");
     puts(longlong_to_str(buf, str_to_longlong("17") + str_to_longlong("-243")));
 
+    printf("2 + 2 = %d, 1.2 - 5.4 = %F\n", 2 + 2, 1.2 - 5.4);
+    printf("\"foo\" + \"bar\" = \"%s\", 'a' + 4 = '%c'\n", "foobar", 'a' + 4);
+    printf("kmain: 0x%p \n", kmain);
+
     puts("Halted.");
     /* OK, we're done and system can be halted */
     halt();
