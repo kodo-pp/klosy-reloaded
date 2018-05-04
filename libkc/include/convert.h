@@ -5,7 +5,7 @@
 #include <stddef.h>
 
 /* TODO: too lazy to write comments. But I guess these are quite obvious */
-
+/* TODO: for str_to_xxx functions currently there is no way to report an error */
 int str_to_int(const char *s);
 unsigned int str_to_uint(const char *s);
 long long str_to_longlong(const char *s);
