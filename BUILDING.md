@@ -69,7 +69,7 @@ $ wget --continue 'ftp://sourceware.org/pub/binutils/snapshots/binutils-2.30.0.t
 $ tar -xf binutils-2.30.0.tar.xz
 ```
 
-Download Binutils source code (download size: about 107 MiB)
+Download GCC source code (download size: about 107 MiB)
 As it was said above, you may want to choose another mirror
 ```
 $ wget  --continue 'ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-7.3.0/gcc-7.3.0.tar.gz'
