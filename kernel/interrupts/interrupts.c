@@ -94,7 +94,7 @@ void init_interrupts(void)
     printf("descr.size = %d\n", descr.size);
     printf("descr.offset = 0x%x\n", descr.offset);
     /*halt();*/
-    /*asm volatile("sti\n\t");*/
+    asm volatile("sti\n\t");
     asm volatile("int $0x21\n\t");
     halt();
     return;
