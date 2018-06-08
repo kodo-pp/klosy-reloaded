@@ -3,6 +3,7 @@
 
 #define NORETURN __attribute__((noreturn))
 #define UNUSED __attribute__((unused))
+#define PACKED __attribute__((packed))
 
 /* Aling non-negative value of arbitary integer or pointer type */
 #define ALIGN(type, val, size) ((type)((size_t)(val) + (size_t)(size) - (size_t)1 - ((size_t)(val) + (size_t)(size) - (size_t)1) % (size_t)(size)))
