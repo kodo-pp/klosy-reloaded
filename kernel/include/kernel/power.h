@@ -6,6 +6,8 @@
 /**
  * Halts system, does not turn power off.
  */
+
 NORETURN void halt(void);
+void idle(void);
 
 #endif /* end of include guard: KERNEL_POWER_H */

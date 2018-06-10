@@ -1,19 +1,39 @@
 .include "asmdefs.inc.s"
 
 .section .data
-qwerty:
-    .ascii "DEBUG: lidt (%%edx) @ %%edx = 0x%x\n\0"
+fault_str:
+    .ascii "Fault.\0"
 
 .section .text
 .globl keyboard_int_handler
 keyboard_int_handler:
-    # call halt
     pushf
+
+    # Call C handler
+    cld
+    call keyboard_handler
+
+    # send EOI
     mov $0x20, %al
     mov $0x20, %dx
     outb %al, %dx
+
+    popf
+    iret
+
+.globl fault_handler
+fault_handler:
+    pushf
     cld
-    call keyboard_handler
+
+    push $fault_str
+    call puts
+    pop %eax
+
+    mov $0x20, %al
+    mov $0x20, %dx
+    outb %al, %dx
+
     popf
     iret
 
@@ -22,32 +42,12 @@ dummy_int_handler:
     mov $0x20, %al
     mov $0x20, %dx
     outb %al, %dx
+
     iret
 
 
-# .globl load_idt
-# .type load_idt, @function
-# load_idt:
-#     push %ebp
-#     mov %esp, %ebp
-#
-#     # load_arg 1, %eax
-#     mov 4(%esp)
-#     lidt (%eax)
-#
-#     mov %ebp, %esp
-#     pop %ebp
-#     ret
-#
-
 .globl load_idt
 load_idt:
-    mov 4(%esp), %edx
-    push %edx
-    push $qwerty
-    call printf
-    pop %eax
-    pop %eax
     mov 4(%esp), %edx
     lidt (%edx)
     ret
