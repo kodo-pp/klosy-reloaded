@@ -17,7 +17,10 @@ struct idt_descriptor {
 struct idt_entry make_idt_entry(uint32_t offset, UNUSED uint8_t dpl) {
     struct idt_entry entry;
     entry.offset_low      = (uint16_t)(offset & 0xFFFF);
-    entry.selector        = (0x01 << 3) | 0x0;
+    entry.selector        = 0x10; // FUCKING GRUB!!!! I COULDN'T SOLVE THIS PROBLEM FOR
+                                  // A COUPLE OF MONTHS. AND WHAT IS IT? JUST FUCKING
+                                  // 0x10 INSTEAD OF 0x8!!!
+                                  // Ok, GRUB isn't guilty, but why do tutorials say it's 0x8?
     entry.always_zero     = 0;
     entry.type_attr       = 0x8E;
     entry.offset_high     = (uint16_t)((offset >> 16) & 0xFFFF);
@@ -34,6 +37,7 @@ void dummy_int_handler(void);
 
 void init_keyboard_idt(void)
 {
+    IDT[0x21] = make_idt_entry((uint32_t)keyboard_int_handler, 0);
     IDT[0x21] = make_idt_entry((uint32_t)keyboard_int_handler, 0);
 
     /* Shitty timer */
@@ -96,6 +100,7 @@ void init_interrupts(void)
     /*halt();*/
     asm volatile("sti\n\t");
     asm volatile("int $0x21\n\t");
+    printf("BBB\n");
     halt();
     return;
 }

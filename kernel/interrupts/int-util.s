@@ -7,7 +7,7 @@ qwerty:
 .section .text
 .globl keyboard_int_handler
 keyboard_int_handler:
-    call halt
+    # call halt
     pushf
     mov $0x20, %al
     mov $0x20, %dx
