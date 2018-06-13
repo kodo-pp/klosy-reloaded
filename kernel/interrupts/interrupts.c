@@ -6,6 +6,7 @@
 #include <kernel/tty.h>
 #include <stdio.h>
 #include <memops.h>
+#include <kcdefines.h>
 
 struct idt_entry IDT[IDT_SIZE];
 

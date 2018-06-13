@@ -141,3 +141,14 @@ void init_kmem(size_t mem_lim)
         set_meta(i, 0);
     }
 }
+
+int definitely_not_code(void *ptr)
+{
+    if (ptr == 0) {
+        return 1;
+    } else if ((size_t)ptr >= (size_t)(&heap_memory)) /* Points to somewhere in the heap */ {
+        return 1;
+    } else {
+        return 0;
+    }
+}

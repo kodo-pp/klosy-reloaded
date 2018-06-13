@@ -38,4 +38,7 @@ void *get_memory_limit(void);
 /** Performs the initialization of memory management module of kernel */
 void init_kmem(size_t mem_lim);
 
+/** Returns 1 if ptr DEFINITELY points to something which is not a function, 0 otherwise */
+int definitely_not_code(void *ptr);
+
 #endif /* end of include guard: KERNEL_MEMORY_H */

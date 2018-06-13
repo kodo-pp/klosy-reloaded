@@ -198,3 +198,18 @@ void vgatty_getposition(int *row, int *col)
         *col = VGA_COL(vga_position);
     }
 }
+
+size_t vgatty_write(const char *data, size_t length) {
+    if (data == NULL) {
+        return 0;
+    }
+    for (size_t i = 0; i < length; ++i) {
+        vgatty_putchar(data[i]);
+    }
+    return length;
+}
+
+/* STUB */
+size_t vgatty_read(UNUSED const char *data, UNUSED size_t length) {
+    return 0;
+}

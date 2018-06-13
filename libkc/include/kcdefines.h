@@ -17,4 +17,13 @@
 /* Value used to represent an error */
 #define SIZE_T_ERROR ((size_t)(-1))
 
+/* Kernel-space assert */
+#define kernel_assert(expr) \
+    do { \
+        if (!(expr)) { \
+            kernel_assert_fail(#expr, __FILE__, __LINE__); \
+        } \
+    } while (0)
+extern NORETURN void kernel_assert_fail(const char *expr, const char *filename, int lineno);
+
 #endif /* end of include guard: LIBKC_KCDEFINES_H */
