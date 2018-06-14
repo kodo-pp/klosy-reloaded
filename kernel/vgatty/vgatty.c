@@ -3,18 +3,29 @@
 
 #include <kernel/vgatty.h>
 #include <kernel/portio.h>
+
 #include <kcdefines.h>
+#include <util.h>
 
 /* CONSTANTS */
 
 /* Constant pointer to non-constant volatile data */
 static volatile uint16_t * const VGA_CHAR_BUF = (uint16_t * const)0xB8000;
 
+#define VGATTY_MAX_CMDARGS 256
+
 /* STATE VARIABLES */
 
 static int vga_position = 0;
 static int vga_color = 0x07;
 static int vgatty_cursor = -1;
+
+static struct {
+    char status;
+    char cmd;
+    int argc;
+    char args[VGATTY_MAX_CMDARGS];
+} vgatty_status;
 
 /* CLEAR AND RESET FUNCTIONS */
 
@@ -31,6 +42,9 @@ void vgatty_reset(void)
     vgatty_clear();
     vgatty_setcursor(1);
     vgatty_setcolor(0x07);
+    vgatty_status.status = 0;
+    vgatty_status.cmd = 0;
+    vgatty_status.argc = -1;
 }
 
 /* UTILITY FUNCTIONS: PARTIAL CLEANING */
@@ -199,12 +213,97 @@ void vgatty_getposition(int *row, int *col)
     }
 }
 
+static inline int vgatty_get_desired_argc(char cmd)
+{
+    switch (cmd) {
+        case '*':   return 2;
+        default:    return 0;
+    }
+}
+
+static inline void vgatty_command_setcolor_2x4(void)
+{
+    int bg = from_hex_char(vgatty_status.args[0]);
+    int fg = from_hex_char(vgatty_status.args[1]);
+    if (bg == -1 && fg == -1) {
+        bg = 0x0;
+        fg = 0x7;
+    } else if (bg == -1) {
+        bg = 0;
+    } else if (fg == -1) {
+        fg = 0x7;
+    }
+
+    uint8_t color = ((uint8_t)(bg & 0xF) << 4) | (uint8_t)(fg & 0xF);
+    vgatty_setcolor(color);
+}
+
+static void vgatty_command(void)
+{
+    if (vgatty_status.status != '\x1b') {
+        /* COMBAK: maybe make an assertion */
+        return;
+    }
+    switch (vgatty_status.cmd) {
+        case '*':   vgatty_command_setcolor_2x4();  break;
+        default:    /* do nothing */                break;
+    }
+
+    vgatty_status.status = 0;
+    vgatty_status.cmd = 0;
+    vgatty_status.argc = -1;
+}
+
+static void vgatty_xputchar(char ch)
+{
+    if UNLIKELY(vgatty_status.status == '\x1b') {
+        if (vgatty_status.argc < 0) {
+            vgatty_status.cmd = ch;
+            if (vgatty_get_desired_argc(ch) <= 0) {
+                vgatty_command();
+                return;
+            }
+            vgatty_status.argc = 0;
+        } else {
+            if UNLIKELY(vgatty_status.argc > VGATTY_MAX_CMDARGS) {
+                vgatty_status.status = 0;
+                kernel_assert(vgatty_status.argc <= VGATTY_MAX_CMDARGS);
+            } else if UNLIKELY(vgatty_status.argc == VGATTY_MAX_CMDARGS) {
+                vgatty_putchar(vgatty_status.status);
+                vgatty_putchar(vgatty_status.cmd);
+                for (int i = 0; i < vgatty_status.argc; ++i) {
+                    vgatty_putchar(vgatty_status.args[i]);
+                }
+                vgatty_status.status = 0;
+                vgatty_status.cmd = 0;
+                vgatty_status.argc = -1;
+            } else {
+                vgatty_status.args[vgatty_status.argc] = ch;
+                ++vgatty_status.argc;
+
+                int desired_argc = vgatty_get_desired_argc(vgatty_status.cmd);
+                if (vgatty_status.argc >= desired_argc) {
+                    vgatty_command();
+                    return;
+                }
+            }
+        }
+    } else {
+        if UNLIKELY(ch == '\x1b') {
+            vgatty_status.status = ch;
+            return;
+        } else {
+            vgatty_putchar(ch);
+        }
+    }
+}
+
 size_t vgatty_write(const char *data, size_t length) {
     if (data == NULL) {
         return 0;
     }
     for (size_t i = 0; i < length; ++i) {
-        vgatty_putchar(data[i]);
+        vgatty_xputchar(data[i]);
     }
     return length;
 }

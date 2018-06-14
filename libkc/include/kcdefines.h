@@ -26,4 +26,12 @@
     } while (0)
 extern NORETURN void kernel_assert_fail(const char *expr, const char *filename, int lineno);
 
+#ifdef __GNUC__
+    #define LIKELY(x) (__builtin_expect((x), 1))
+    #define UNLIKELY(x) (__builtin_expect((x), 0))
+#else
+    #define LIKELY
+    #define UNLIKELY
+#endif
+
 #endif /* end of include guard: LIBKC_KCDEFINES_H */

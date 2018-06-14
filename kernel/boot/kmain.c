@@ -93,6 +93,8 @@ void kmain(struct multiboot_info *mbt)
     init_kmem(mbt->mem_upper * 1024 + 1024 * 1024);
     puts("Memory initialized");
 
+    printf("This is a \x1b*52test\x1b*07!!!\n");
+
     puts("System initialized, awaiting for user input");
     while (1) {
         idle();
