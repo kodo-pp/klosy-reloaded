@@ -1,5 +1,7 @@
 %include "asmdefs.inc.asm"
 
+extern keyboard_handler, puts
+
 section .data
 fault_str db `Fault.\0`
 
@@ -20,7 +22,7 @@ keyboard_int_handler:
     popf
     iret
 
-.globl fault_handler
+global fault_handler
 fault_handler:
     pushf
     cld
@@ -36,7 +38,7 @@ fault_handler:
     popf
     iret
 
-.globl dummy_int_handler
+global dummy_int_handler
 dummy_int_handler:
     mov al, 0x20
     mov dx, 0x20
@@ -44,7 +46,7 @@ dummy_int_handler:
 
     iret
 
-.globl load_idt
+global load_idt
 load_idt:
     mov edx, [esp + 4]
     lidt [edx]

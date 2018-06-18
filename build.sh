@@ -4,12 +4,13 @@ kernel_name="klosy-reloaded.elf"
 
 CC="i686-elf-gcc"
 CXX="i686-elf-g++"
-AS="i686-elf-as"
+# AS="i686-elf-as"
+AS="nasm"
 LD="i686-elf-gcc"
 
 CFLAGS="-Wall -Wextra -std=gnu99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -O0 -static-libgcc"
 CXXFLAGS="-Wall -Wextra -std=gnu++11 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -fno-exceptions -fno-rtti"
-ASFLAGS="-I kernel/include/asm"
+ASFLAGS="-I kernel/include/asm/ -f elf"
 LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib -static"
 
 LIBS="-lgcc"
@@ -46,7 +47,7 @@ function dump_command() {
         echo -ne '\e[1;34m[ C++ ] \e[0m'
         ;;
     as)
-        echo -ne '\e[1;34m[ AS ]  \e[0m'
+        echo -ne '\e[1;34m[ ASM ] \e[0m'
         ;;
     link)
         echo -ne '\e[1;35m[LINK]  \e[0m'
@@ -82,8 +83,8 @@ function build_file() {
     *.C|*.cpp|*.c++)
         run_command cxx "${CXX}" ${CXXFLAGS} -c -o "${objname}" "$1" >&2
         ;;
-    *.s|*.S)
-        run_command as "${AS}" ${ASFLAGS} -c -o "${objname}" "$1" >&2
+    *.asm)
+        run_command as "${AS}" ${ASFLAGS} -o "${objname}" "$1" >&2
         ;;
     *)
         echo -e "\e[1;31mError: unable to build file '$1'\e[0m" >&2
@@ -96,7 +97,7 @@ echo -e '\e[1mBuilding...\e[0m'
 
 objects=''
 
-for i in $(find . -regex '.*[.]\(s\|S\|c\|C\|cpp\|c++\)' -type f); do
+for i in $(find . -regex '.*[.]\(asm\|c\|C\|cpp\|c++\)' -type f); do
     objects="${objects} $(build_file "$i")"
 done
 
