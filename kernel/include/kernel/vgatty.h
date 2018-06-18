@@ -51,18 +51,18 @@ void vgatty_putbyte(char ch);
 /** Puts default-colored char in the terminal, checking if it is a special char (e.g. '\n') */
 void vgatty_putchar(char ch);
 /** Puts default-colored zero-terminated string in the terminal */
-void vgatty_putstr(char *str);
+void vgatty_putstr(const char *str);
 /** Puts default-colored array of raw bytes with arbitary length in the terminal */
-void vgatty_putdata(char *str, size_t len);
+void vgatty_putdata(const char *str, size_t len);
 
 /** Puts raw colored byte in the terminal, w/o any checks on '\n' or similar stuff. */
 void vgatty_putfbyte(uint16_t ch);
 /** Puts colored char in the terminal, checking if it is a special char (e.g. '\n') */
 void vgatty_putfchar(uint16_t ch);
 /** Puts colored zero-terminated string in the terminal */
-void vgatty_putfstr(uint16_t *str);
+void vgatty_putfstr(const uint16_t *str);
 /** Puts colored array of raw bytes with arbitary length in the terminal */
-void vgatty_putfdata(uint16_t *str, size_t len);
+void vgatty_putfdata(const uint16_t *str, size_t len);
 
 /** Sets default color */
 void vgatty_setcolor(uint8_t color);

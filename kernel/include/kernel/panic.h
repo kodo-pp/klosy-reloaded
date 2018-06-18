@@ -10,10 +10,10 @@ extern "C" {
 #endif
 
 /** Early failure reporter. Does not requires VGA terminal to be initialized */
-NORETURN void early_boot_failure(char *message);
+NORETURN void early_boot_failure(const char *message);
 
 /** Failure reporter. Prints message and halts system */
-NORETURN void panic(char *message);
+NORETURN void panic(const char *message);
 
 #ifdef __cplusplus
 }

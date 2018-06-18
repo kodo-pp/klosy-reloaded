@@ -116,7 +116,7 @@ static void vgatty_scroll(void)
 
 void vgatty_putbyte(char ch) { vgatty_putfbyte(VGAFCHAR(ch, vga_color)); }
 void vgatty_putchar(char ch) { vgatty_putfchar(VGAFCHAR(ch, vga_color)); }
-void vgatty_putstr(char *str)
+void vgatty_putstr(const char *str)
 {
     if (str == NULL) {
         return;
@@ -126,7 +126,7 @@ void vgatty_putstr(char *str)
         ++str;
     }
 }
-void vgatty_putdata(char *str, size_t len)
+void vgatty_putdata(const char *str, size_t len)
 {
     if (str == NULL) {
         return;
@@ -161,7 +161,7 @@ void vgatty_putfchar(uint16_t ch)
         vgatty_putfbyte(ch);
     }
 }
-void vgatty_putfstr(uint16_t *str)
+void vgatty_putfstr(const uint16_t *str)
 {
     if (str == NULL) {
         return;
@@ -170,7 +170,7 @@ void vgatty_putfstr(uint16_t *str)
         vgatty_putfchar(*str);
     }
 }
-void vgatty_putfdata(uint16_t *str, size_t len)
+void vgatty_putfdata(const uint16_t *str, size_t len)
 {
     if (str == NULL) {
         return;

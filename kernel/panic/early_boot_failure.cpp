@@ -11,9 +11,9 @@
  * VGA terminal is assumed to be not ready for outputting, so we will write directly
  * to video memory
  */
-NORETURN void early_boot_failure(char *message)
+NORETURN void early_boot_failure(const char *message)
 {
-    char *heading =
+    const char *heading =
         "********************************************************************************"
         "***                              BOOT FAILURE                                ***"
         "********************************************************************************";
