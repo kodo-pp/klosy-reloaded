@@ -10,8 +10,8 @@ size_t write(const char *data, size_t length);
 /** Reads certain amount of data from the terminal. [NOT IMPLEMENTED] */
 size_t read(char *buf, size_t length);
 
-typedef size_t(*tty_write_t)(const char *, size_t);
-typedef size_t(*tty_read_t)(char *, size_t);
+using tty_write_t = size_t(*)(const char *, size_t);
+using tty_read_t =  size_t(*)(char *,       size_t);
 
 struct tty {
     tty_write_t write_func;
