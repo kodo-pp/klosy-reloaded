@@ -1,6 +1,6 @@
 # Coding style
 
-Klosy style guide for the C lanuage.
+Klosy style guide for the C++ lanuage.
 
 ## TL;DR
 - Indentation: 4 spaces, no tabs
@@ -9,13 +9,11 @@ Klosy style guide for the C lanuage.
 [Linux style](https://www.kernel.org/doc/html/v4.13/process/coding-style.html#placing-braces-and-spaces)
 with some exceptions, see section 'Braces'
 
-- Naming: variable_name, function_name(arg_name), CONST_OR_DEFINE_NAME
+- Naming: variable_name, function_name(arg_name), CONST_OR_DEFINE_NAME, ClassName, namespace_name
 
 - Empty lines are OK, if necessary
 
 - `++i` is better than `i++`
-
-- `/* Comment */` is better than `// Comment`
 
 - Wrap lines at 80-100 chars
 
@@ -26,7 +24,7 @@ with some exceptions, see section 'Braces'
 tab length is equal to 4).
 
 Case or other labels are not indented. Example:
-```
+```c
 switch (value) {
 case 1:
     do_something();
@@ -67,14 +65,14 @@ No space:
 Vertical alignment is permitted, but use it only when it improves readability. Example:
 
 w/o alignment:
-```
+```c
 foo(x, y[2], z(3));
 foo(63, y[11], x);
 foo(444, y[x+14], 0);
 ```
 
 w/ alignment:
-```
+```c
 foo(x,   y[2],    z(3));
 foo(63,  y[11],   x);
 foo(444, y[x+14], 0);
@@ -83,7 +81,7 @@ foo(444, y[x+14], 0);
 ## Braces
 Use Linux-style braces:
 
-```
+```c
 int foo(int x)
 {
     if (bar(x) < 0) {
@@ -98,11 +96,11 @@ One-liners are OK if they improve the readability. Example:
 `int foo(x) { return bar(x + 5); }`
 
 Empty bodies should be denoted like this:
-```
+```c
 while (foo() > 5) { }
 ```
 OR like this:
-```
+```c
 while (foo() > 5) {
     /* empty */
 }
@@ -111,15 +109,29 @@ while (foo() > 5) {
 Use braces even if the body of a statement contains only one line. Example:
 
 OK:
-```
+```c
 if (foo(5)) {
     bar();
 }
 ```
 Bad:
-```
+```c
 if (foo(5))
     bar();
+```
+
+*class* and *struct* braces can be put both ways:
+```c
+struct foo {
+    ...
+}
+```
+or
+```c
+struct foo
+{
+    ...
+}
 ```
 
 ## Naming
@@ -133,10 +145,9 @@ Use them to briefly describe function purpose right above its *declaration* (per
 the header file) and to clarify some ugly and confusing code (the code will still
 remain ugly and confusing, but at least I will know what (and maybe why) it does)
 
-Prefer `/* comment */` to `// comment`.
-
 Use this style to describe functions:
-```
+
+```c
 /**
  * Returns a random value
  */
@@ -158,9 +169,10 @@ the point of view of meaning.
 - Try to avoid do-while loops, but again, use them if you think it is the best option
 
 - Try to avoid increment and decrement in expressions (e.g. `while (*ptr++ != 0)` is bad)
+This is optional, so if you find these more readable - go ahead and use them.
 
-- Use `break`s in switch-case statements if it is necessary, leave a `/* fallthrough */` comment
-on non-trivial fallthrough ocassions (see example in the beginning)
+- Use `break`s in switch-case statements if it is necessary, leave a `/* fallthrough */` or similar
+comment on non-trivial fallthrough ocassions (see example in the beginning)
 
 - Lines should be wrapped at 80-100 chars
 
@@ -171,3 +183,6 @@ Exception: long if - else if chains or switch-case statements, which can be long
 
 - Keep in mind that most of this code runs in kernel mode, so be triple-careful when
 dealing with things like arrays and pointers
+
+- C++ sources are built with -fno-exceptions flag, so you can't use exceptions (but if stack
+unwinding and similar stuff will be implemented, usage of exceptions will be permitted).
