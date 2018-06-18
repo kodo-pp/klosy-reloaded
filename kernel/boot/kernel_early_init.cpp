@@ -16,7 +16,7 @@
 /**
  * Initialize crucial modules such as memory manager or terminal
  */
-extern "C" void kernel_early_init(struct multiboot_info *mbt)
+extern "C" void kernel_early_init(struct multiboot_info* mbt)
 {
     init_modules(mbt);
 }

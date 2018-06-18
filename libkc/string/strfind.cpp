@@ -3,7 +3,7 @@
 #include <string.h>
 #include <kcdefines.h>
 
-size_t strfindc(const char *str, char ch)
+size_t strfindc(const char* str, char ch)
 {
     if (str == NULL) {
         return SIZE_T_ERROR;

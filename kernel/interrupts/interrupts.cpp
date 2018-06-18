@@ -15,13 +15,14 @@ struct idt_descriptor {
     uint32_t offset;
 } __attribute__((packed));
 
-extern "C" void load_idt(struct idt_descriptor *descr);
+extern "C" void load_idt(struct idt_descriptor* descr);
 
 extern "C" void keyboard_int_handler(void);
 extern "C" void dummy_int_handler(void);
 extern "C" void fault_handler(void);
 
-struct idt_entry make_idt_entry(uint32_t offset, UNUSED uint8_t dpl) {
+struct idt_entry make_idt_entry(uint32_t offset, UNUSED uint8_t dpl)
+{
     struct idt_entry entry;
     entry.offset_low      = (uint16_t)(offset & 0xFFFF);
     entry.selector        = 0x10; /* FUCKING GRUB!!!! I COULDN'T SOLVE THIS PROBLEM FOR
@@ -35,7 +36,8 @@ struct idt_entry make_idt_entry(uint32_t offset, UNUSED uint8_t dpl) {
     return entry;
 }
 
-extern "C" void keyboard_handler(void) {
+extern "C" void keyboard_handler(void)
+{
     uint8_t scancode = inb(0x60);
     printf("Got scancode: %d\n", (int)scancode);
 }

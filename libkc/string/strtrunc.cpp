@@ -3,7 +3,7 @@
 #include <string.h>
 #include <kcdefines.h>
 
-size_t strtrunc(size_t len, char *str)
+size_t strtrunc(size_t len, char* str)
 {
     if (str == NULL) {
         return SIZE_T_ERROR;
@@ -18,7 +18,7 @@ size_t strtrunc(size_t len, char *str)
     return idx;
 }
 
-size_t strtrunc_fast(size_t len, char *str)
+size_t strtrunc_fast(size_t len, char* str)
 {
     if (str == NULL) {
         return SIZE_T_ERROR;

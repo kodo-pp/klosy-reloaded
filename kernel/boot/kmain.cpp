@@ -16,7 +16,7 @@
 /**
  * Entry point to high-level part of kernel
  */
-extern "C" void kmain(struct multiboot_info *mbt)
+extern "C" void kmain(struct multiboot_info* mbt)
 {
     /*init_modules(mbt);*/
 
@@ -35,7 +35,8 @@ extern "C" void kmain(struct multiboot_info *mbt)
     printf("%sMemory limit:%s %z MiB\n", "\x1b*0F", "\x1b*07", (mbt->mem_upper >> 10) + 1);
     puts("");
 
-    printf("Heap memory begins at %z (approx. %z KiB)\n", (size_t)(&heap_memory), (size_t)(&heap_memory) >> 10);
+    printf("Heap memory begins at %z (approx. %z KiB)\n", (size_t)(&heap_memory),
+           (size_t)(&heap_memory) >> 10);
     puts("");
 
     init_kmem(mbt->mem_upper * 1024 + 1024 * 1024);

@@ -3,7 +3,7 @@
 #include <string.h>
 #include <kcdefines.h>
 
-size_t strcat(char *dest, const char *src)
+size_t strcat(char* dest, const char* src)
 {
     if (dest == NULL || src == NULL) {
         return SIZE_T_ERROR;
@@ -24,7 +24,7 @@ size_t strcat(char *dest, const char *src)
     return len;
 }
 
-size_t strncat(size_t lim, char *dest, const char *src)
+size_t strncat(size_t lim, char* dest, const char* src)
 {
     if (dest == NULL || src == NULL) {
         return SIZE_T_ERROR;

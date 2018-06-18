@@ -7,12 +7,12 @@
 #include <kcdefines.h>
 #include <kernel/memory.h>
 
-size_t printf(const char *fmt, ...)
+size_t printf(const char* fmt, ...)
 {
     if (fmt == NULL) {
         return SIZE_T_ERROR;
     }
-    char *buf = static_cast <char *> (kmalloc(256 * sizeof(char)));
+    char* buf = static_cast <char*> (kmalloc(256 * sizeof(char)));
     if (!buf) {
         return SIZE_T_ERROR;
     }
@@ -71,13 +71,13 @@ size_t printf(const char *fmt, ...)
                 written += writes(ulonglong_to_str_base(buf, va_arg(args, unsigned long long), 8));
                 break;
             case 's':
-                written += writes(va_arg(args, char *));
+                written += writes(va_arg(args, char*));
                 break;
             case 'c': {
-                    char c = (char)va_arg(args, int);
-                    written += write(&c, 1);
-                }
-                break;
+                char c = (char)va_arg(args, int);
+                written += write(&c, 1);
+            }
+            break;
             }
         } else {
             write(fmt + i, 1);

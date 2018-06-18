@@ -3,7 +3,7 @@
 #include <convert.h>
 #include <string.h>
 
-static const char *base_lookup_table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const char* base_lookup_table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 #define NUM_TO_STR(buf, n, idx, base) \
     do { \
@@ -22,10 +22,16 @@ static const char *base_lookup_table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         } \
     } while (0)
 
-char *uint_to_str      (char *buf, unsigned int n)       { return uint_to_str_base      (buf, n, 10); }
-char *ulonglong_to_str (char *buf, unsigned long long n) { return ulonglong_to_str_base (buf, n, 10); }
+char* uint_to_str      (char* buf, unsigned int n)
+{
+    return uint_to_str_base      (buf, n, 10);
+}
+char* ulonglong_to_str (char* buf, unsigned long long n)
+{
+    return ulonglong_to_str_base (buf, n, 10);
+}
 
-char *int_to_str(char *buf, int n)
+char* int_to_str(char* buf, int n)
 {
     size_t idx = 0;
     if (n < 0) {
@@ -41,7 +47,7 @@ char *int_to_str(char *buf, int n)
     return buf;
 }
 
-char *uint_to_str_base(char *buf, unsigned int n, int base)
+char* uint_to_str_base(char* buf, unsigned int n, int base)
 {
     if (base <= 1 || base > 36) {
         return NULL;
@@ -52,7 +58,7 @@ char *uint_to_str_base(char *buf, unsigned int n, int base)
     return buf;
 }
 
-char *longlong_to_str(char *buf, long long n)
+char* longlong_to_str(char* buf, long long n)
 {
     size_t idx = 0;
     if (n < 0) {
@@ -68,7 +74,7 @@ char *longlong_to_str(char *buf, long long n)
     return buf;
 }
 
-char *ulonglong_to_str_base(char *buf, unsigned long long n, int base)
+char* ulonglong_to_str_base(char* buf, unsigned long long n, int base)
 {
     if (base <= 1 || base > 36) {
         return NULL;

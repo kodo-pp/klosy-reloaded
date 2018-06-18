@@ -5,8 +5,8 @@
 #include <kernel/tty.h>
 #include <kernel/init.h>
 
-extern size_t vgatty_write(const char *, size_t);
-extern size_t vgatty_read(char *, size_t);
+extern size_t vgatty_write(const char*, size_t);
+extern size_t vgatty_read(char*, size_t);
 
 int init_tty(void)
 {

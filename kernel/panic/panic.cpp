@@ -6,7 +6,8 @@
 #include <kernel/vgatty.h>
 #include <kcdefines.h>
 
-NORETURN void panic(const char *message) {
+NORETURN void panic(const char* message)
+{
     vgatty_putstr("Kernel panic: ");
     vgatty_putstr(message);
     halt();

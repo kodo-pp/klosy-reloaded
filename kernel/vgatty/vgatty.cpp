@@ -10,7 +10,7 @@
 /* CONSTANTS */
 
 /* Constant pointer to non-constant volatile data */
-static volatile uint16_t * const VGA_CHAR_BUF = (uint16_t * const)0xB8000;
+static volatile uint16_t* const VGA_CHAR_BUF = (uint16_t* const)0xB8000;
 
 #define VGATTY_MAX_CMDARGS 256
 
@@ -88,17 +88,17 @@ void vgatty_move_cursor(uint16_t pos)
 
 static void vgatty_enable_cursor(uint8_t cursor_start, uint8_t cursor_end)
 {
-	outb(0x3D4, 0x0A);
-	outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
 
-	outb(0x3D4, 0x0B);
-	outb(0x3D5, (inb(0x3E0) & 0xE0) | cursor_end);
+    outb(0x3D4, 0x0B);
+    outb(0x3D5, (inb(0x3E0) & 0xE0) | cursor_end);
 }
 
 static void vgatty_disable_cursor()
 {
-	outb(0x3D4, 0x0A);
-	outb(0x3D5, 0x20);
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, 0x20);
 }
 
 /* UTILITY FUNCTION: SCROLLING */
@@ -114,9 +114,15 @@ static void vgatty_scroll(void)
 
 /* WRITING UNFORMATTED DATA TO VGATTY */
 
-void vgatty_putbyte(char ch) { vgatty_putfbyte(VGAFCHAR(ch, vga_color)); }
-void vgatty_putchar(char ch) { vgatty_putfchar(VGAFCHAR(ch, vga_color)); }
-void vgatty_putstr(const char *str)
+void vgatty_putbyte(char ch)
+{
+    vgatty_putfbyte(VGAFCHAR(ch, vga_color));
+}
+void vgatty_putchar(char ch)
+{
+    vgatty_putfchar(VGAFCHAR(ch, vga_color));
+}
+void vgatty_putstr(const char* str)
 {
     if (str == NULL) {
         return;
@@ -126,7 +132,7 @@ void vgatty_putstr(const char *str)
         ++str;
     }
 }
-void vgatty_putdata(const char *str, size_t len)
+void vgatty_putdata(const char* str, size_t len)
 {
     if (str == NULL) {
         return;
@@ -161,7 +167,7 @@ void vgatty_putfchar(uint16_t ch)
         vgatty_putfbyte(ch);
     }
 }
-void vgatty_putfstr(const uint16_t *str)
+void vgatty_putfstr(const uint16_t* str)
 {
     if (str == NULL) {
         return;
@@ -170,7 +176,7 @@ void vgatty_putfstr(const uint16_t *str)
         vgatty_putfchar(*str);
     }
 }
-void vgatty_putfdata(const uint16_t *str, size_t len)
+void vgatty_putfdata(const uint16_t* str, size_t len)
 {
     if (str == NULL) {
         return;
@@ -183,7 +189,10 @@ void vgatty_putfdata(const uint16_t *str, size_t len)
 
 /* MANAGING VGATTY CONFIGURATION (COLOR, ETC) */
 
-void vgatty_setcolor(uint8_t color) { vga_color = color; }
+void vgatty_setcolor(uint8_t color)
+{
+    vga_color = color;
+}
 void vgatty_setposition(int row, int col)
 {
     if (VGA_ROW_OK(row) && VGA_COL_OK(col)) {
@@ -191,7 +200,8 @@ void vgatty_setposition(int row, int col)
     }
     vgatty_move_cursor(vga_position);
 }
-void vgatty_setcursor(int cursor) {
+void vgatty_setcursor(int cursor)
+{
     if (cursor == 0) {
         vgatty_disable_cursor();
     } else {
@@ -200,10 +210,11 @@ void vgatty_setcursor(int cursor) {
     vgatty_cursor = cursor;
 }
 
-int vgatty_getcursor(void) {
+int vgatty_getcursor(void)
+{
     return vgatty_cursor == 0 ? 0 : 1;
 }
-void vgatty_getposition(int *row, int *col)
+void vgatty_getposition(int* row, int* col)
 {
     if (row != NULL) {
         *row = VGA_ROW(vga_position);
@@ -216,8 +227,10 @@ void vgatty_getposition(int *row, int *col)
 static inline int vgatty_get_desired_argc(char cmd)
 {
     switch (cmd) {
-        case '*':   return 2;
-        default:    return 0;
+    case '*':
+        return 2;
+    default:
+        return 0;
     }
 }
 
@@ -245,8 +258,11 @@ static void vgatty_command(void)
         return;
     }
     switch (vgatty_status.cmd) {
-        case '*':   vgatty_command_setcolor_2x4();  break;
-        default:    /* do nothing */                break;
+    case '*':
+        vgatty_command_setcolor_2x4();
+        break;
+    default:    /* do nothing */
+        break;
     }
 
     vgatty_status.status = 0;
@@ -298,7 +314,8 @@ static void vgatty_xputchar(char ch)
     }
 }
 
-size_t vgatty_write(const char *data, size_t length) {
+size_t vgatty_write(const char* data, size_t length)
+{
     if (data == NULL) {
         return 0;
     }
@@ -309,6 +326,7 @@ size_t vgatty_write(const char *data, size_t length) {
 }
 
 /* STUB */
-size_t vgatty_read(UNUSED char *data, UNUSED size_t length) {
+size_t vgatty_read(UNUSED char* data, UNUSED size_t length)
+{
     return 0;
 }

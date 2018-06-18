@@ -6,7 +6,7 @@
 #include <kernel/panic.h>
 #include <kernel/interrupts.h>
 
-void init_modules(struct multiboot_info *mbt)
+void init_modules(struct multiboot_info* mbt)
 {
     if (!(mbt->flags & 1)) {
         early_boot_failure("Memory information not provided by bootloader");

@@ -11,13 +11,13 @@
  * VGA terminal is assumed to be not ready for outputting, so we will write directly
  * to video memory
  */
-NORETURN void early_boot_failure(const char *message)
+NORETURN void early_boot_failure(const char* message)
 {
-    const char *heading =
+    const char* heading =
         "********************************************************************************"
         "***                              BOOT FAILURE                                ***"
         "********************************************************************************";
-    volatile uint16_t * video_ptr = (uint16_t *)0xB8000;
+    volatile uint16_t* video_ptr = (uint16_t*)0xB8000;
     for (size_t i = 0; i < VGA_HEIGHT * VGA_WIDTH; ++i) {
         *(video_ptr + i) = VGANFCHAR('\0');
     }

@@ -30,10 +30,17 @@
         } \
     } while (0) \
 
-unsigned int str_to_uint(const char *s) { return str_to_uint_base(s, 10); }
-unsigned long long str_to_ulonglong(const char *s) { return str_to_ulonglong_base(s, 10); }
+unsigned int str_to_uint(const char* s)
+{
+    return str_to_uint_base(s, 10);
+}
+unsigned long long str_to_ulonglong(const char* s)
+{
+    return str_to_ulonglong_base(s, 10);
+}
 
-int str_to_int(const char *s) {
+int str_to_int(const char* s)
+{
     if (s == NULL) {
         return 0;
     }
@@ -49,7 +56,7 @@ int str_to_int(const char *s) {
     return num * sign;
 }
 
-long long str_to_longlong(const char *s)
+long long str_to_longlong(const char* s)
 {
     if (s == NULL) {
         return 0;
@@ -66,7 +73,7 @@ long long str_to_longlong(const char *s)
     return num * sign;
 }
 
-unsigned int str_to_uint_base(const char *s, int base)
+unsigned int str_to_uint_base(const char* s, int base)
 {
     if (s == NULL) {
         return 0;
@@ -76,7 +83,7 @@ unsigned int str_to_uint_base(const char *s, int base)
     STR_TO_NUMBER(num, s, base);
     return num;
 }
-unsigned long long str_to_ulonglong_base(const char *s, int base)
+unsigned long long str_to_ulonglong_base(const char* s, int base)
 {
     if (s == NULL) {
         return 0;

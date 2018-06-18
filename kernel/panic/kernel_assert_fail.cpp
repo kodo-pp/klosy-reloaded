@@ -4,7 +4,8 @@
 #include <kcdefines.h>
 #include <stdio.h>
 
-NORETURN void kernel_assert_fail(const char *expr, const char *filename, int lineno) {
+NORETURN void kernel_assert_fail(const char* expr, const char* filename, int lineno)
+{
     if (has_kernel_tty()) {
         printf("FATAL: Kernel assertion failed\n");
         printf("Assertion: %s\n", expr);
