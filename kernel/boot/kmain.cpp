@@ -13,18 +13,8 @@
 #include <kernel/memory.h>
 #include <kernel/panic.h>
 
-// This is a test
-// It should output 'Foo(a=4, b=9)' before the kmain() function starts
-class Foo {
-public:
-    Foo(int a, int b) {
-        printf("Foo(a=%d, b=%d)\n", a, b);
-    }
-};
-Foo foo(4, 9);
-
 /**
- * Entry point to high-level part of kernel (C is considered a high-level prog. language)
+ * Entry point to high-level part of kernel
  */
 extern "C" void kmain(struct multiboot_info *mbt)
 {
