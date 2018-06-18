@@ -1,6 +1,6 @@
 %include "asmdefs.inc.asm"
 
-extern keyboard_handler, puts
+extern keyboard_handler, c_puts
 
 section .data
 fault_str db `Fault.\0`
@@ -28,7 +28,7 @@ fault_handler:
     cld
 
     push fault_str
-    call puts
+    call c_puts
     pop eax
 
     mov al, 0x20

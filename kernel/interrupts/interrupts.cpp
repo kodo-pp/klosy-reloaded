@@ -15,11 +15,11 @@ struct idt_descriptor {
     uint32_t offset;
 } __attribute__((packed));
 
-void load_idt(struct idt_descriptor *descr);
+extern "C" void load_idt(struct idt_descriptor *descr);
 
-extern void keyboard_int_handler(void);
-extern void dummy_int_handler(void);
-extern void fault_handler(void);
+extern "C" void keyboard_int_handler(void);
+extern "C" void dummy_int_handler(void);
+extern "C" void fault_handler(void);
 
 struct idt_entry make_idt_entry(uint32_t offset, UNUSED uint8_t dpl) {
     struct idt_entry entry;
@@ -35,7 +35,7 @@ struct idt_entry make_idt_entry(uint32_t offset, UNUSED uint8_t dpl) {
     return entry;
 }
 
-void keyboard_handler(void) {
+extern "C" void keyboard_handler(void) {
     uint8_t scancode = inb(0x60);
     printf("Got scancode: %d\n", (int)scancode);
 }

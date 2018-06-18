@@ -12,7 +12,7 @@ size_t printf(const char *fmt, ...)
     if (fmt == NULL) {
         return SIZE_T_ERROR;
     }
-    char *buf = kmalloc(256 * sizeof(char));
+    char *buf = static_cast <char *> (kmalloc(256 * sizeof(char)));
     if (!buf) {
         return SIZE_T_ERROR;
     }

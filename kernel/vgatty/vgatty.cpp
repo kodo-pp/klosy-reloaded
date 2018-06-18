@@ -309,6 +309,6 @@ size_t vgatty_write(const char *data, size_t length) {
 }
 
 /* STUB */
-size_t vgatty_read(UNUSED const char *data, UNUSED size_t length) {
+size_t vgatty_read(UNUSED char *data, UNUSED size_t length) {
     return 0;
 }
