@@ -16,9 +16,9 @@
 /**
  * Entry point to high-level part of kernel (C is considered a high-level prog. language)
  */
-void kmain(struct multiboot_info *mbt)
+extern "C" void kmain(struct multiboot_info *mbt)
 {
-    init_modules(mbt);
+    /*init_modules(mbt);*/
 
     /* Print available memory size */
 

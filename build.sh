@@ -9,7 +9,7 @@ AS="nasm"
 LD="i686-elf-gcc"
 
 CFLAGS="-Wall -Wextra -std=gnu99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -O0 -static-libgcc"
-CXXFLAGS="-Wall -Wextra -std=gnu++11 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -fno-exceptions -fno-rtti"
+CXXFLAGS="-Wall -Wextra -std=gnu++11 -pedantic -Ikernel/include -Ilibkc/include -Ilibkc++/include -ffreestanding -fno-exceptions -fno-rtti"
 ASFLAGS="-I kernel/include/asm/ -f elf"
 LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib -static"
 
@@ -72,7 +72,7 @@ function build_file() {
         kill $$
     fi
 
-    objname="$(echo "$i" | sed 's/[.][^.]*$/.o/g')"
+    objname="$(echo "$1" | sed 's/[.][^.]*$/.o/g')"
 
     echo "${objname}"
 
@@ -97,8 +97,15 @@ echo -e '\e[1mBuilding...\e[0m'
 
 objects=''
 
-for i in $(find . -regex '.*[.]\(asm\|c\|C\|cpp\|c++\)' -type f); do
+for i in $(find . -regex '.*[.]\(asm\|c\|C\|cpp\|c++\)' -type f | grep -vF 'NOBUILD'); do
     objects="${objects} $(build_file "$i")"
 done
 
-run_command link "${LD}" ${objects} ${LDFLAGS} -o "${kernel_name}"
+crtbegin_obj="$(${CXX} ${CXXFLAGS} -print-file-name=crtbegin.o)"
+crtend_obj="$(${CXX} ${CXXFLAGS} -print-file-name=crtend.o)"
+
+crti_obj="$(build_file "libkc/NOBUILD/crti.asm")"
+crtn_obj="$(build_file "libkc/NOBUILD/crtn.asm")"
+
+run_command link "${LD}" ${crti_obj} ${crtbegin_obj} ${objects} ${crtend_obj} ${crtn_obj} \
+    ${LDFLAGS} -o "${kernel_name}"

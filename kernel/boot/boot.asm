@@ -13,7 +13,7 @@
 %define CHECKSUM     (-(MAGIC + FLAGS))          ; checksum of above, to prove we are multiboot
 
 ; Specific for Nasm: declare extern symbols
-extern kmain
+extern kernel_early_init, kmain, _init, _fini
 
 
 ; Declare a multiboot header that marks the program as a kernel. These are magic
@@ -83,7 +83,20 @@ _start:
 	;Pushing %ebx allows us to access memory map via multiboot-capable bootloader
 	;(see https://wiki.osdev.org/Detecting_Memory_(x86)#Memory_Map_Via_GRUB)
 	;TODO: check magic value (%eax)
-	push ebx
+    push ebx
+    ;OK, but we need the stack to be 16-byte aligned. I know the way how to
+    ;do it, gimme a sec...
+    push ebx
+    push ebx
+    push ebx
+    ;Done!
+
+    ;Firstly, initialize crucial kernel components, such as memory manager or
+    ;terminal
+    call kernel_early_init
+
+    ;Secondly, call global constructors at .init section
+    call _init
 
 	;Enter the high-level kernel. The ABI requires the stack is 16-byte
 	;aligned at the time of the call instruction (which afterwards pushes
@@ -93,6 +106,12 @@ _start:
 	;preserved and the call is well defined.
 	call kmain
 
+    ;Finally, we exited. And it seems that we exited successfully (there was
+    ;no kernel panic, no triple fault, no early boot failure).
+    ;We should now call global destructors at .fini section. I understand
+    ;it's little worth to do things that won't be necessary after a CPU halt,
+    ;but actually it doesn't matter
+    call _fini
 	
 	;If the system has nothing more to do, put the computer into an
 	;infinite loop. To do that:
