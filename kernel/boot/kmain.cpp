@@ -13,6 +13,16 @@
 #include <kernel/memory.h>
 #include <kernel/panic.h>
 
+// This is a test
+// It should output 'Foo(a=4, b=9)' before the kmain() function starts
+class Foo {
+public:
+    Foo(int a, int b) {
+        printf("Foo(a=%d, b=%d)\n", a, b);
+    }
+};
+Foo foo(4, 9);
+
 /**
  * Entry point to high-level part of kernel (C is considered a high-level prog. language)
  */
@@ -21,13 +31,6 @@ extern "C" void kmain(struct multiboot_info *mbt)
     /*init_modules(mbt);*/
 
     /* Print available memory size */
-
-    /* I know, at the moment printing is VERY ugly, but it will be changed to
-     * a couple of generic functions like write or printf, instead of working
-     * directly with a tty
-     *
-     * TIME TO REFACTOR!!1!
-     */
     printf("%sMemory information provided?%s ", "\x1b*0F", "\x1b*07");
     if (mbt->flags & 1) {
         printf("%syes%s\n", "\x1b*02", "\x1b*07");
