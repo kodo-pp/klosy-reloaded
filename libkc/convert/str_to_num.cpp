@@ -41,7 +41,7 @@ unsigned long long str_to_ulonglong(const char* s)
 
 int str_to_int(const char* s)
 {
-    if (s == NULL) {
+    if (s == nullptr) {
         return 0;
     }
 
@@ -58,7 +58,7 @@ int str_to_int(const char* s)
 
 long long str_to_longlong(const char* s)
 {
-    if (s == NULL) {
+    if (s == nullptr) {
         return 0;
     }
 
@@ -75,7 +75,7 @@ long long str_to_longlong(const char* s)
 
 unsigned int str_to_uint_base(const char* s, int base)
 {
-    if (s == NULL) {
+    if (s == nullptr) {
         return 0;
     }
 
@@ -85,7 +85,7 @@ unsigned int str_to_uint_base(const char* s, int base)
 }
 unsigned long long str_to_ulonglong_base(const char* s, int base)
 {
-    if (s == NULL) {
+    if (s == nullptr) {
         return 0;
     }
 

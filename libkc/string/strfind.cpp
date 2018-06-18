@@ -5,7 +5,7 @@
 
 size_t strfindc(const char* str, char ch)
 {
-    if (str == NULL) {
+    if (str == nullptr) {
         return SIZE_T_ERROR;
     }
 

@@ -4,6 +4,7 @@
 #include <kernel/memory.h>
 #include <kernel/vgatty.h>
 #include <kernel/power.h>
+#include <memops.h>
 
 static void* memory_limit;
 static void* heap_blocks;
@@ -70,12 +71,19 @@ static size_t find_free_blocks(size_t length)
     return SIZE_T_ERROR;
 }
 
+void kmem_dump_uf(size_t startbi, size_t endbi) {
+    for (size_t i = startbi; i < endbi; ++i) {
+        printf("%c", get_meta(i) == 0 ? 'F' : 'U');
+    }
+    puts("");
+}
+
 void* kmalloc(size_t size)
 {
     size_t length = INTCEIL(size, KMEM_BLOCK_SIZE);
     size_t block_index = find_free_blocks(length);
     if (block_index == SIZE_T_ERROR) {
-        return NULL;
+        return nullptr;
     }
 
     set_meta(block_index, length);
@@ -84,6 +92,76 @@ void* kmalloc(size_t size)
     }
 
     return usable_ptr_by_offset(block_index);
+}
+
+static bool maybe_krealloc_append(size_t block_index, size_t old_length, size_t new_length)
+{
+    // Check whether we can just append appropriate number of blocks
+    for (size_t i = old_length; i < new_length; ++i) {
+        if (!is_block_free(block_index + i)) {
+            return false;
+        }
+    }
+
+    // OK, then just so it
+    for (size_t i = old_length; i < new_length; ++i) {
+        set_meta(block_index + i, KMEM_BLOCK_CONT);
+    }
+
+    // Update length value of the first block
+    set_meta(block_index, new_length);
+    return true;
+}
+
+void* krealloc(void* ptr, size_t new_size)
+{
+    if (ptr == nullptr) {
+        return kmalloc(new_size);
+    } else if (new_size == 0) {
+        kfree(ptr);
+        return nullptr;
+    }
+    size_t block_index = offset_by_usable_ptr(ptr);
+    size_t old_length = get_meta(block_index);
+    if (old_length == SIZE_T_ERROR) {
+        return nullptr;
+    } else if (old_length == KMEM_BLOCK_CONT) {
+        return nullptr;
+    } else if (old_length == 0) {
+        return nullptr;
+    }
+
+    size_t new_length = INTCEIL(new_size, KMEM_BLOCK_SIZE);
+    if (new_length == old_length) {
+        // OK, just do nothing
+        return ptr;
+    } else if (new_length < old_length) {
+        // Also quite simple, just free some unneeded blocks
+        for (size_t i = new_length; i < old_length; ++i) {
+            set_meta(block_index + i, 0);
+        }
+        set_meta(block_index, new_length);
+        return ptr;
+    } else { // new_length > old_length
+        // This is a bit more complicated
+        // Firstly, we look whether new memory can just be appended to already existing
+        bool append_success = maybe_krealloc_append(block_index, old_length, new_length);
+        if (append_success) {
+            return ptr;
+        }
+
+        // If than didn't work, we just allocate and copy
+        void* new_ptr = kmalloc(new_size);
+        if (new_ptr == nullptr) {
+            return nullptr;
+        }
+
+        // If that was successful, copy memory from old memory region to a new one
+        // and free the old one
+        memcpy(new_ptr, ptr, old_length * KMEM_BLOCK_SIZE);
+        kfree(ptr);
+        return new_ptr;
+    }
 }
 
 int kfree(void* ptr)

@@ -5,7 +5,7 @@
 
 size_t strcat(char* dest, const char* src)
 {
-    if (dest == NULL || src == NULL) {
+    if (dest == nullptr || src == nullptr) {
         return SIZE_T_ERROR;
     }
 
@@ -26,7 +26,7 @@ size_t strcat(char* dest, const char* src)
 
 size_t strncat(size_t lim, char* dest, const char* src)
 {
-    if (dest == NULL || src == NULL) {
+    if (dest == nullptr || src == nullptr) {
         return SIZE_T_ERROR;
     }
 

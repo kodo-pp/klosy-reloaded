@@ -5,7 +5,7 @@
 
 size_t strtrunc(size_t len, char* str)
 {
-    if (str == NULL) {
+    if (str == nullptr) {
         return SIZE_T_ERROR;
     }
 
@@ -20,7 +20,7 @@ size_t strtrunc(size_t len, char* str)
 
 size_t strtrunc_fast(size_t len, char* str)
 {
-    if (str == NULL) {
+    if (str == nullptr) {
         return SIZE_T_ERROR;
     }
 

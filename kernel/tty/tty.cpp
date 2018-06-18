@@ -31,14 +31,14 @@ int has_kernel_tty(void)
 size_t tty_write(int ttyno, const char* data, size_t length)
 {
     kernel_assert(0 <= ttyno && ttyno < ttys_count && ttys_count <= MAX_TTYS);
-    kernel_assert(terminals[ttyno].write_func != NULL);
+    kernel_assert(terminals[ttyno].write_func != nullptr);
     return terminals[ttyno].write_func(data, length);
 }
 
 size_t tty_read(int ttyno, char* buf, size_t length)
 {
     kernel_assert(0 <= ttyno && ttyno < ttys_count && ttys_count <= MAX_TTYS);
-    kernel_assert(terminals[ttyno].read_func != NULL);
+    kernel_assert(terminals[ttyno].read_func != nullptr);
     return terminals[ttyno].read_func(buf, length);
 }
 

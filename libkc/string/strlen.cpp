@@ -4,7 +4,7 @@
 
 size_t strlen(const char* str)
 {
-    if (str == NULL) {
+    if (str == nullptr) {
         return 0;
     }
     size_t len = 0;

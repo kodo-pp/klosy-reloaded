@@ -9,7 +9,7 @@
 
 size_t printf(const char* fmt, ...)
 {
-    if (fmt == NULL) {
+    if (fmt == nullptr) {
         return SIZE_T_ERROR;
     }
     char* buf = static_cast <char*> (kmalloc(256 * sizeof(char)));

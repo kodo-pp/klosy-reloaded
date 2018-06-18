@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 
 /*
  * Minimal allocatable size
@@ -23,8 +24,12 @@
 extern const size_t heap_memory;
 /*extern size_t memory_limit;*/
 
+void kmem_dump_uf(size_t startbi, size_t endbi);
+
 /** allocates a chunk of memory for the kernel needs */
-void *kmalloc(size_t size);
+void* kmalloc(size_t size);
+
+void* krealloc(void* ptr, size_t new_size);
 /** deallocates memory allocated with kmalloc */
 int kfree(void *ptr);
 /** tells whether the block of memory is allocated or not */

@@ -50,7 +50,7 @@ char* int_to_str(char* buf, int n)
 char* uint_to_str_base(char* buf, unsigned int n, int base)
 {
     if (base <= 1 || base > 36) {
-        return NULL;
+        return nullptr;
     }
 
     size_t idx = 0;
@@ -77,7 +77,7 @@ char* longlong_to_str(char* buf, long long n)
 char* ulonglong_to_str_base(char* buf, unsigned long long n, int base)
 {
     if (base <= 1 || base > 36) {
-        return NULL;
+        return nullptr;
     }
 
     size_t idx = 0;

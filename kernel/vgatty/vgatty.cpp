@@ -124,7 +124,7 @@ void vgatty_putchar(char ch)
 }
 void vgatty_putstr(const char* str)
 {
-    if (str == NULL) {
+    if (str == nullptr) {
         return;
     }
     while (*str != '\0') {
@@ -134,7 +134,7 @@ void vgatty_putstr(const char* str)
 }
 void vgatty_putdata(const char* str, size_t len)
 {
-    if (str == NULL) {
+    if (str == nullptr) {
         return;
     }
     for (size_t i = 0; i < len; ++i) {
@@ -169,7 +169,7 @@ void vgatty_putfchar(uint16_t ch)
 }
 void vgatty_putfstr(const uint16_t* str)
 {
-    if (str == NULL) {
+    if (str == nullptr) {
         return;
     }
     while (*str != '\0') {
@@ -178,7 +178,7 @@ void vgatty_putfstr(const uint16_t* str)
 }
 void vgatty_putfdata(const uint16_t* str, size_t len)
 {
-    if (str == NULL) {
+    if (str == nullptr) {
         return;
     }
     for (size_t i = 0; i < len; ++i) {
@@ -216,10 +216,10 @@ int vgatty_getcursor(void)
 }
 void vgatty_getposition(int* row, int* col)
 {
-    if (row != NULL) {
+    if (row != nullptr) {
         *row = VGA_ROW(vga_position);
     }
-    if (col != NULL) {
+    if (col != nullptr) {
         *col = VGA_COL(vga_position);
     }
 }
@@ -316,7 +316,7 @@ static void vgatty_xputchar(char ch)
 
 size_t vgatty_write(const char* data, size_t length)
 {
-    if (data == NULL) {
+    if (data == nullptr) {
         return 0;
     }
     for (size_t i = 0; i < length; ++i) {

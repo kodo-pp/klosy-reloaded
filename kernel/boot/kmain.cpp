@@ -44,6 +44,34 @@ extern "C" void kmain(struct multiboot_info* mbt)
 
     printf("This is a \x1b*52test\x1b*07!!!\n");
 
+    void* ptr = kmalloc(1100);
+    printf("1: ptr = %z\n", ptr);
+    kmem_dump_uf(0, 20);
+
+    ptr = krealloc(ptr, 500);
+    printf("2: ptr = %z\n", ptr);
+    kmem_dump_uf(0, 20);
+
+    ptr = krealloc(ptr, 1500);
+    printf("3: ptr = %z\n", ptr);
+    kmem_dump_uf(0, 20);
+
+    void* other_ptr = kmalloc(300);
+    printf("4: other_ptr = %z\n", other_ptr);
+    kmem_dump_uf(0, 20);
+
+    ptr = krealloc(ptr, 2000);
+    printf("5: ptr = %z\n", ptr);
+    kmem_dump_uf(0, 20);
+
+    kfree(ptr);
+    printf("6: ptr freed\n");
+    kmem_dump_uf(0, 20);
+
+    kfree(other_ptr);
+    printf("7: other_ptr freed\n");
+    kmem_dump_uf(0, 20);
+
     puts("System initialized, awaiting for user input");
     while (1) {
         idle();
