@@ -111,6 +111,43 @@ public:
         ++_length;
     }
 
+    // Change actual size of vector
+    void resize(size_t new_length, T elem = T())
+    {
+        if (new_length > _capacity) {
+            _capacity = new_length;
+            decltype(_data) tmp = Alloc::realloc(_data, _capacity);
+            if (tmp == nullptr) {
+                // TEMP
+                printf("std::kvector<%s> at 0x%x: unable to [re]allocate memory for %z elements (%z bytes)\n",
+                       kstd::type_traits<T>::type_name,
+                       reinterpret_cast <size_t> (this),
+                       _capacity,
+                       _capacity * sizeof(T)
+                );
+                panic("kstd::vector: memory allocation failed");
+            }
+            _data = tmp;
+        }
+
+        for (size_t i = _length; i < new_length; ++i) {
+            _data[i] = elem;
+        }
+       _length = new_length;
+    }
+
+    // Get length
+    size_t length()
+    {
+        return _length;
+    }
+
+    // Get data buffer
+    T* data()
+    {
+        return _data;
+    }
+
 protected:
     size_t _length;
     size_t _capacity;

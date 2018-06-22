@@ -2,7 +2,7 @@
 #include <vector.hpp>
 #include <memops.h>
 
-void ustar_ls(void* tarball, size_t max_size, kstd::vector < kstd::vector <char> >& dest)
+void ustar_ls(void* tarball, size_t max_size, kstd::vector < kstd::string >& dest)
 {
     kernel_assert(sizeof (struct ustar_file) == 512);
     struct ustar_file buf;
@@ -10,10 +10,8 @@ void ustar_ls(void* tarball, size_t max_size, kstd::vector < kstd::vector <char>
 
     for (size_t i = 0; i < max_size; /* */) {
         memcpy(&buf, static_cast <struct ustar_file*> (tarball) + i, sizeof(buf));
-        uint64_t magic;
-        memcpy(&magic, &buf.ustar_magic, sizeof(buf.ustar_magic));
-        uint64_t correct_magic;
-        memcpy(&correct_magic, "ustar\0" "00", sizeof(correct_magic));
+        kstd::string magic(buf->ustar_magic, 6);
+        kstd::string correct_magic("ustar\0", 6);
         if (magic != correct_magic) {
             printf("ustar_ls: error: ustar magic mismatch\n");
             return;
