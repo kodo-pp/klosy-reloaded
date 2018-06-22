@@ -115,7 +115,9 @@ static bool maybe_krealloc_append(size_t block_index, size_t old_length, size_t 
 
 void* krealloc(void* ptr, size_t new_size)
 {
-    if (ptr == nullptr) {
+    if (ptr == nullptr && new_size == 0) {
+        return nullptr;
+    } else if (ptr == nullptr) {
         return kmalloc(new_size);
     } else if (new_size == 0) {
         kfree(ptr);

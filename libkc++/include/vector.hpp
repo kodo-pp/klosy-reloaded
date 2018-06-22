@@ -2,6 +2,9 @@
 #define LIBKCXX_VECTOR_HPP
 
 #include <default_allocator.hpp>
+#include <type_traits.hpp>
+#include <kernel/panic.h>
+#include <memops.h>
 
 namespace kstd
 {
@@ -14,7 +17,8 @@ public:
     vector()
         : _length(0)
         , _capacity(0)
-        , _data(nullptr);
+        , _data(nullptr)
+    { }
 
     // Copy c-tor
     vector(const vector <T>& other)
@@ -45,15 +49,17 @@ public:
         if (_data == nullptr) {
             // TEMP: Replace with throwing an exception when implemented
             printf("std::kvector<%s> at 0x%x: unable to allocate memory for %z elements (%z bytes)\n",
-                   kstd::type_traits::type_name<T>,
-                   static_cast <size_t> (this),
+                   kstd::type_traits<T>::type_name,
+                   reinterpret_cast <size_t> (this),
                    _capacity,
                    _capacity * sizeof(T)
             );
             panic("kstd::vector: memory allocation failed");
         }
 
-        memset(_data, 0, _length * sizeof(T));
+        for (size_t i = 0; i < count; ++i) {
+            _data[i] = value;
+        }
     }
 
     // D-tor
@@ -90,8 +96,8 @@ public:
             if (tmp == nullptr) {
                 // TEMP
                 printf("std::kvector<%s> at 0x%x: unable to [re]allocate memory for %z elements (%z bytes)\n",
-                       kstd::type_traits::type_name<T>,
-                       static_cast <size_t> (this),
+                       kstd::type_traits<T>::type_name,
+                       reinterpret_cast <size_t> (this),
                        _capacity,
                        _capacity * sizeof(T)
                 );

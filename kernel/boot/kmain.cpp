@@ -13,6 +13,8 @@
 #include <kernel/memory.h>
 #include <kernel/panic.h>
 
+#include <vector.hpp>
+
 /**
  * Entry point to high-level part of kernel
  */
@@ -72,8 +74,16 @@ extern "C" void kmain(struct multiboot_info* mbt)
     printf("7: other_ptr freed\n");
     kmem_dump_uf(0, 20);
 
+    kstd::vector <int> vec(500, 33);
+    vec.push_back(42);
+    printf("vec.at(499) = %d\n", vec.at(499));
+    printf("vec.at(500) = %d\n", vec.at(500));
+    vec.at(500) = 145;
+    printf("vec.at(500) = %d\n", vec.at(500));
+
+
     puts("System initialized, awaiting for user input");
-    while (1) {
+    while (true) {
         idle();
     }
 }

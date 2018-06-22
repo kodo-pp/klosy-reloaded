@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 kernel_name="klosy-reloaded.elf"
 iso_name="klosy-reloaded.iso"
 iso_tmp_dir="iso-dir"

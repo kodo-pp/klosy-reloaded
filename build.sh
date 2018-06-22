@@ -19,7 +19,7 @@ LDFLAGS="${LDFLAGS} ${LIBS}"
 FLAGS=""
 
 # Please, don't replace 'a' with 'x' here (I mean the first character of the string)
-if [ "a${KR_DEBUG}" == 'ayes' ]; then
+if [ "a${DEBUG}" == 'ayes' ]; then
     FLAGS="${FLAGS} -g"
 fi
 

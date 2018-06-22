@@ -1,5 +1,5 @@
-#ifndef LIBKCXX_VECTOR_HPP
-#define LIBKCXX_VECTOR_HPP
+#ifndef LIBKCXX_TYPE_TRAITS_HPP
+#define LIBKCXX_TYPE_TRAITS_HPP
 
 namespace kstd
 {
@@ -38,5 +38,5 @@ TYPE_NAME(bool);
 
 }
 
-#endif // end of include guard: LIBKCXX_VECTOR_HPP
+#endif // end of include guard: LIBKCXX_TYPE_TRAITS_HPP
 
