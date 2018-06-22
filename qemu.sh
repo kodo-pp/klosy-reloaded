@@ -5,7 +5,7 @@ QEMU_PARAMS="-m 256"
 iso_name="klosy-reloaded.iso"
 
 # Please, don't replace 'a' with 'x' here (I mean the first character of the string)
-if [ "a${KR_DEBUG}" == 'ayes' ]; then
+if [ "a${DEBUG}" == 'ayes' ]; then
     QEMU_PARAMS="${QEMU_PARAMS} -s"
 fi
 

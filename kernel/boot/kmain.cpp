@@ -44,43 +44,20 @@ extern "C" void kmain(struct multiboot_info* mbt)
     init_kmem(mbt->mem_upper * 1024 + 1024 * 1024);
     puts("Memory initialized");
 
-    printf("This is a \x1b*52test\x1b*07!!!\n");
+    printf("Modules count: %d\n", static_cast <int> (mbt->mods_count));
+    printf("Modules addr : 0x%p\n", static_cast <size_t> (mbt->mods_addr));
 
-    void* ptr = kmalloc(1100);
-    printf("1: ptr = %z\n", ptr);
-    kmem_dump_uf(0, 20);
-
-    ptr = krealloc(ptr, 500);
-    printf("2: ptr = %z\n", ptr);
-    kmem_dump_uf(0, 20);
-
-    ptr = krealloc(ptr, 1500);
-    printf("3: ptr = %z\n", ptr);
-    kmem_dump_uf(0, 20);
-
-    void* other_ptr = kmalloc(300);
-    printf("4: other_ptr = %z\n", other_ptr);
-    kmem_dump_uf(0, 20);
-
-    ptr = krealloc(ptr, 2000);
-    printf("5: ptr = %z\n", ptr);
-    kmem_dump_uf(0, 20);
-
-    kfree(ptr);
-    printf("6: ptr freed\n");
-    kmem_dump_uf(0, 20);
-
-    kfree(other_ptr);
-    printf("7: other_ptr freed\n");
-    kmem_dump_uf(0, 20);
-
-    kstd::vector <int> vec(500, 33);
-    vec.push_back(42);
-    printf("vec.at(499) = %d\n", vec.at(499));
-    printf("vec.at(500) = %d\n", vec.at(500));
-    vec.at(500) = 145;
-    printf("vec.at(500) = %d\n", vec.at(500));
-
+    if (mbt->mods_count == 0) {
+        printf("No modules are loaded :(\n");
+    } else {
+        printf("Yay! We can have our initrd!\n");
+        auto mod_list = reinterpret_cast <struct multiboot_mod_list*> (mbt->mods_addr);
+        printf("Initrd begins at 0x%p\n", mod_list[0].mod_start);
+        printf("Initrd ends   at 0x%p\n", mod_list[0].mod_end);
+        printf("Initrd content:\n");
+        write(reinterpret_cast <char*> (mod_list[0].mod_start),
+              mod_list[0].mod_end - mod_list[0].mod_start);
+    }
 
     puts("System initialized, awaiting for user input");
     while (true) {

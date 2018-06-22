@@ -9,11 +9,11 @@ static const char* base_lookup_table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     do { \
         size_t beg = idx; \
         buf[idx] = '0'; \
-        while (n != 0) { \
+        do { \
             buf[idx] = base_lookup_table[n % base]; \
             ++idx; \
             n /= base; \
-        } \
+        } while (n != 0); \
         buf[idx] = '\0'; \
         for (size_t i = 0; i < (idx - beg) / 2; ++i) { \
             char tmp = buf[beg+i]; \
