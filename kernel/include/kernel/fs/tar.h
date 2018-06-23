@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <vector.hpp>
+#include <string.hpp>
 #include <kcdefines.h>
 
 struct ustar_file
@@ -29,7 +30,9 @@ struct ustar_file
     char padding[12];          // Padding, ignored
 } PACKED;
 
-void ustar_ls(void* tarball, kstd::vector < kstd::vector <char> >& dest);
+static_assert(sizeof(struct ustar_file) == 512, "sizeof(struct ustar_file) != 512");
+
+void ustar_ls(void* tarball, size_t max_size, kstd::vector < kstd::string >& dest);
 struct ustar_file* ustar_fileseek(void* tarball, const char* filename);
 size_t ustar_read(struct ustar_file* file, void* buf, size_t offset, size_t length);
 

@@ -22,9 +22,9 @@ public:
 
     // Copy c-tor
     vector(const vector <T>& other)
-        : _length(other._length)
-        , _capacity(other._capacity)
     {
+        _length = other._length;
+        _capacity = other._capacity;
         _data = Alloc::alloc(_capacity * sizeof(T));
         memcpy(_data, other._data, _length * sizeof(T));
     }
@@ -48,7 +48,7 @@ public:
         _data = Alloc::alloc(_capacity * sizeof(T));
         if (_data == nullptr) {
             // TEMP: Replace with throwing an exception when implemented
-            printf("std::kvector<%s> at 0x%x: unable to allocate memory for %z elements (%z bytes)\n",
+            printf("kstd::vector<%s> at 0x%x: unable to allocate memory for %z elements (%z bytes)\n",
                    kstd::type_traits<T>::type_name,
                    reinterpret_cast <size_t> (this),
                    _capacity,
@@ -69,13 +69,13 @@ public:
     }
 
     // Access (no range checks)
-    T& operator [](size_t idx)
+    T& operator [](size_t idx) const
     {
         return _data[idx];
     }
 
     // Access (with range checks)
-    T& at(size_t idx)
+    T& at(size_t idx) const
     {
         // TEMP
         kernel_assert(idx >= 0 && idx < _length);
@@ -95,7 +95,7 @@ public:
             decltype(_data) tmp = Alloc::realloc(_data, _capacity);
             if (tmp == nullptr) {
                 // TEMP
-                printf("std::kvector<%s> at 0x%x: unable to [re]allocate memory for %z elements (%z bytes)\n",
+                printf("kstd::vector<%s> at 0x%x: unable to [re]allocate memory for %z elements (%z bytes)\n",
                        kstd::type_traits<T>::type_name,
                        reinterpret_cast <size_t> (this),
                        _capacity,
@@ -119,7 +119,7 @@ public:
             decltype(_data) tmp = Alloc::realloc(_data, _capacity);
             if (tmp == nullptr) {
                 // TEMP
-                printf("std::kvector<%s> at 0x%x: unable to [re]allocate memory for %z elements (%z bytes)\n",
+                printf("kstd::vector<%s> at 0x%x: unable to [re]allocate memory for %z elements (%z bytes)\n",
                        kstd::type_traits<T>::type_name,
                        reinterpret_cast <size_t> (this),
                        _capacity,
@@ -137,18 +137,41 @@ public:
     }
 
     // Get length
-    size_t length()
+    size_t length() const
     {
         return _length;
     }
 
     // Get data buffer
-    T* data()
+    T* data() const
     {
         return _data;
     }
 
+    // Assignment
+    vector <T, Alloc>& operator=(const vector <T, Alloc>& other)
+    {
+        vector <T, Alloc> copy(other);
+        swap(copy);
+        return *this;
+    }
+
 protected:
+    void swap(vector <T, Alloc>& other)
+    {
+        size_t my_length = _length;
+        size_t my_capacity = _capacity;
+        T* my_data = _data;
+
+        _length = other._length;
+        _capacity = other._capacity;
+        _data = other._data;
+
+        other._length = my_length;
+        other._capacity = my_capacity;
+        other._data = my_data;
+    }
+
     size_t _length;
     size_t _capacity;
     T* _data;

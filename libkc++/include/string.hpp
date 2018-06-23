@@ -38,8 +38,9 @@ public:
     // C-style string copy
     basic_string(const T* str)
     {
+        _data.resize(1, T(0));
         while(*str != T(0)) {
-            push_back(*str)
+            push_back(*str);
             ++str;
         }
     }
@@ -47,23 +48,24 @@ public:
     // C-style array copy
     basic_string(const T* arr, size_t count)
     {
-        resize(count)
+        resize(count);
         for (size_t i = 0; i < count; ++i) {
             at(i) = arr[i];
         }
+        push_back(T(0));
     }
 
     // D-tor
     virtual ~basic_string() = default;
 
     // Access (no range checks)
-    T& operator [](size_t idx)
+    T& operator [](size_t idx) const
     {
         return _data[idx];
     }
 
     // Access (with range checks)
-    T& at(size_t idx)
+    T& at(size_t idx) const
     {
         return _data.at(idx);
     }
@@ -78,24 +80,24 @@ public:
     // Change actual size of basic_string
     void resize(size_t new_length, T elem = T())
     {
-        _data.resize(new_length);
+        _data.resize(new_length, elem);
         _data.push_back(T(0));
     }
 
     // Get length
-    size_t length()
+    size_t length() const
     {
         return _data.length() - 1;
     }
 
     // Provide access to c-style (zero-terminated) string buffer
-    T* c_str()
+    T* c_str() const
     {
         return _data.data();
     }
 
     // Concatenate strings together
-    basic_string <T, Alloc> operator+(const basic_string& other)
+    basic_string <T, Alloc> operator+(const basic_string <T, Alloc>& other) const
     {
         basic_string <T, Alloc> ret(*this);
         ret.resize(length() + other.length());
@@ -106,7 +108,7 @@ public:
     }
 
     // Compare two strings
-    bool operator==(const basic_string& other)
+    bool operator==(const basic_string <T, Alloc>& other) const
     {
         if (length() != other.length()) {
             return false;
@@ -120,11 +122,38 @@ public:
         return true;
     }
 
+    bool operator!=(const basic_string <T, Alloc>& other) const
+    {
+        return !(operator==(other));
+    }
+
+    // Assignment
+    basic_string <T, Alloc>& operator=(const basic_string <T, Alloc>& other)
+    {
+        basic_string <T, Alloc> copy(other);
+        gimme(copy);
+        return *this;
+    }
+
 protected:
+    void swap(basic_string <T, Alloc>& other)
+    {
+        kstd::vector <T, Alloc> tmp(_data);
+        _data = other._data;
+        other._data = tmp;
+    }
+
+    // Similar to swap, but unfair
+    void gimme(basic_string <T, Alloc>& other)
+    {
+        _data = other._data;
+        other._data = vector <T, Alloc>();
+    }
+
     vector <T, Alloc> _data;
 };
 
-using string = basic_string <char>
+using string = basic_string <char>;
 
 }
 

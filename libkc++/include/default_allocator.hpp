@@ -11,7 +11,8 @@ struct default_allocator
 {
     static T* alloc(size_t size)
     {
-        return static_cast <T*> (kmalloc(size));
+        T* ptr = static_cast <T*> (kmalloc(size));
+        return ptr;
     }
 
     static void free(T* ptr)
@@ -21,7 +22,8 @@ struct default_allocator
 
     static T* realloc(T* ptr, size_t new_size)
     {
-        return static_cast <T*> (krealloc(static_cast <void*> (ptr), new_size));
+        T* newptr = static_cast <T*> (krealloc(static_cast <void*> (ptr), new_size));
+        return newptr;
     }
 };
 

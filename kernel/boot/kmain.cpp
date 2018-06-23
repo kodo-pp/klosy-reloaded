@@ -14,6 +14,8 @@
 #include <kernel/panic.h>
 
 #include <vector.hpp>
+#include <string.hpp>
+#include <kernel/fs/tar.h>
 
 /**
  * Entry point to high-level part of kernel
@@ -54,9 +56,16 @@ extern "C" void kmain(struct multiboot_info* mbt)
         auto mod_list = reinterpret_cast <struct multiboot_mod_list*> (mbt->mods_addr);
         printf("Initrd begins at 0x%p\n", mod_list[0].mod_start);
         printf("Initrd ends   at 0x%p\n", mod_list[0].mod_end);
-        printf("Initrd content:\n");
-        write(reinterpret_cast <char*> (mod_list[0].mod_start),
-              mod_list[0].mod_end - mod_list[0].mod_start);
+        //printf("Initrd content:\n");
+        //write(reinterpret_cast <char*> (mod_list[0].mod_start),
+        //      mod_list[0].mod_end - mod_list[0].mod_start);
+        kstd::vector <kstd::string> files;
+        ustar_ls(reinterpret_cast <void*> (mod_list[0].mod_start),
+                 mod_list[0].mod_end - mod_list[0].mod_start,
+                 files);
+        for (size_t i = 0; i < files.length(); ++i) {
+            printf("file: '%s'\n", files.at(i).c_str());
+        }
     }
 
     puts("System initialized, awaiting for user input");

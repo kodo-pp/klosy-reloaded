@@ -130,7 +130,7 @@ void* krealloc(void* ptr, size_t new_size)
     } else if (old_length == KMEM_BLOCK_CONT) {
         return nullptr;
     } else if (old_length == 0) {
-        return nullptr;
+        return kmalloc(new_size);
     }
 
     size_t new_length = INTCEIL(new_size, KMEM_BLOCK_SIZE);

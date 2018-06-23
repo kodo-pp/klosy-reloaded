@@ -3,7 +3,7 @@
 extern keyboard_handler, c_puts
 
 section .data
-fault_str db `Fault.\0`
+fault_str db `General Protection Fault.\0`
 
 section .text
 global keyboard_int_handler
@@ -30,6 +30,8 @@ fault_handler:
     push fault_str
     call c_puts
     pop eax
+    cli
+    hlt
 
     mov al, 0x20
     mov dx, 0x20
