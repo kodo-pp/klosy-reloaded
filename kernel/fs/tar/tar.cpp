@@ -14,8 +14,10 @@ static size_t ustar_filesize(const struct ustar_file& file)
             size_str.push_back(c);
         }
     }
+    // printf("Final size_str: '%s'\n", size_str.c_str());
 
     size_t size = str_to_size_t_base(size_str.c_str(), 8);
+    // printf("file size: %z\n", size);
     return size;
 }
 
@@ -25,23 +27,30 @@ void ustar_ls(void* tarball, size_t max_size, kstd::vector < kstd::string >& des
     struct ustar_file buf;
     dest.resize(0);
 
+    // printf("max_size = %z\n", max_size);
+
+    // Check the USTAR magic
+    memcpy(&buf, static_cast <struct ustar_file*> (tarball), sizeof(buf));
+    kstd::string magic(buf.ustar_magic, 5);
+    kstd::string correct_magic("ustar", 5);
+    if (magic != correct_magic) {
+        printf("ustar_ls: error: ustar magic mismatch\n");
+        printf("Expected: %x %x %x %x %x\n", 'u', 's', 't', 'a', 'r');
+        printf("Got:      %x %x %x %x %x\n", magic.at(0), magic.at(1), magic.at(2), magic.at(3), magic.at(4));
+        return;
+    }
+
     // While we haven't overrun the tarball size
-    for (size_t i = 0; i < max_size; /* */) {
+    for (size_t i = 0; i < max_size / sizeof(buf); /* */) {
         // Read the block
         memcpy(&buf, static_cast <struct ustar_file*> (tarball) + i, sizeof(buf));
 
-        printf("ustar_ls: i = %z\n", i);
-        printf("file size str is: '");
-        write(buf.filesize, 12);
-        printf("'\n");
+        // printf("ustar_ls: i = %z\n", i);
 
-        // Check the USTAR magic
+        // Check the USTAR magic, if the check fails - the tarball has ended
         kstd::string magic(buf.ustar_magic, 5);
         kstd::string correct_magic("ustar", 5);
         if (magic != correct_magic) {
-            printf("ustar_ls: error: ustar magic mismatch\n");
-            printf("Expected: %x %x %x %x %x\n", 'u', 's', 't', 'a', 'r');
-            printf("Got:      %x %x %x %x %x\n", magic.at(0), magic.at(1), magic.at(2), magic.at(3), magic.at(4));
             return;
         }
         
@@ -51,11 +60,12 @@ void ustar_ls(void* tarball, size_t max_size, kstd::vector < kstd::string >& des
         // Go to the next header block:
         // Determine the file length in blocks
         auto blocks_count = (ustar_filesize(buf) + sizeof(buf) - 1) / sizeof(buf);
+        // printf("blocks count: %z\n", blocks_count);
         // The next block is our [0]'th file block
-        i += sizeof(buf);
+        ++i;
 
         // And then we skip all file blocks
-        i += sizeof(buf) * blocks_count;
+        i += blocks_count;
     }
 }
 

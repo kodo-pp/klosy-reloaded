@@ -1,6 +1,9 @@
 *.o
 *.so
+
 *.d
+!initrd.d
+
 *.dll
 *.exe
 *.lib
@@ -10,3 +13,4 @@
 
 core.*
 *.orig
+

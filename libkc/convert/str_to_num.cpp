@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <convert.h>
 #include <string.h>
+#include <stdio.h>
 
 #define UNBASE(ch) \
     ( \
@@ -11,12 +12,12 @@
                 ? ((ch) - 'a' + 10) \
                 : ('A' <= (ch) && (ch) <= 'Z') \
                     ? ((ch) - 'A' + 10) \
-                    : 0 \
+                    : -1 \
     )
 
 /* Uses operator comma */
 #define BASE_FILTER(correct, val, base) \
-    ((correct = correct && (val > 0 && val < base)), val)
+    ((correct = correct && (val >= 0 && val < base)), val)
 
 #define STR_TO_NUMBER(numvar, str, base) \
     do { \
