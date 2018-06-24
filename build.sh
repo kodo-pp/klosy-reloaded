@@ -41,16 +41,17 @@ function run_command() {
 function dump_command() {
     case $1 in
     cc)
-        echo -ne '\e[1;34m[ CC ]  \e[0m'
+        #echo -ne '\e[1;34m[ CC ]  \e[0m'
+        echo -n "  -> Building C source:    "
         ;;
     cxx)
-        echo -ne '\e[1;34m[ C++ ] \e[0m'
+        echo -n "  -> Building C++ source:  "
         ;;
     as)
-        echo -ne '\e[1;34m[ ASM ] \e[0m'
+        echo -n "  -> Building NASM source: "
         ;;
     link)
-        echo -ne '\e[1;35m[LINK]  \e[0m'
+        echo -n "  -> Linking ELF:          "
         ;;
     esac
 
@@ -93,7 +94,7 @@ function build_file() {
     esac
 }
 
-echo -e '\e[1mBuilding...\e[0m'
+echo '==> Building...'
 
 objects=''
 

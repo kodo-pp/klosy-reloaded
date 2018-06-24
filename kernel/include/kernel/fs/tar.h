@@ -33,8 +33,8 @@ struct ustar_file
 static_assert(sizeof(struct ustar_file) == 512, "sizeof(struct ustar_file) != 512");
 
 void ustar_ls(void* tarball, size_t max_size, kstd::vector < kstd::string >& dest);
-struct ustar_file* ustar_fileseek(void* tarball, const char* filename);
-size_t ustar_read(struct ustar_file* file, void* buf, size_t offset, size_t length);
+struct ustar_file* ustar_fileseek(void* tarball, size_t max_size, const kstd::string& filename);
+size_t ustar_read(struct ustar_file* file, kstd::string& buf);
 
 #endif // end of include guard: KERNEL_FS_TAR_H
 

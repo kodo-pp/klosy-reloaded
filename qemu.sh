@@ -13,5 +13,5 @@ if [ "x$1" == "x-f" ] || ! [ -f "${iso_name}" ]; then
     ./iso.sh $1 || exit 1
 fi
 
-echo -e "\e[1;32m[QEMU]  \e[0m${iso_name}"
+echo "==> Starting QEMU..."
 qemu-system-i386 ${QEMU_PARAMS} -cdrom "${iso_name}"

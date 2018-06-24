@@ -66,6 +66,20 @@ extern "C" void kmain(struct multiboot_info* mbt)
         for (size_t i = 0; i < files.length(); ++i) {
             printf("file: '%s'\n", files.at(i).c_str());
         }
+
+        auto file = ustar_fileseek(reinterpret_cast <void*> (mod_list[0].mod_start),
+                                   mod_list[0].mod_end - mod_list[0].mod_start,
+                                   "some_file");
+        printf("file = 0x%p\n", file);
+        if (file == nullptr) {
+            printf("Sorry, file not found :(\n");
+        } else {
+            kstd::string buf;
+            ustar_read(file, buf);
+            printf("File contents: '");
+            write(buf.c_str(), buf.length());
+            printf("'\n");
+        }
     }
 
     puts("System initialized, awaiting for user input");

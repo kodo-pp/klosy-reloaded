@@ -1,0 +1,6 @@
+# klosy-reloaded
+
+An attempt to rewrite Klosy from scracth due to its bugs and костыли. Yes, I have too much free time
+
+Some bootstrap project structure was taken from [Bare Bones tutorial](https://wiki.osdev.org/Bare_bones)
+on [OSDev Wiki](https://wiki.osdev.org).
