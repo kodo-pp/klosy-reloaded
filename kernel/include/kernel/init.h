@@ -12,6 +12,6 @@ void init_modules(struct multiboot_info *mbt);
 int init_memory(size_t memory_limit);
 
 /** Init function. Initialize terminal control module and default VGA terminal */
-int init_tty(void);
+int init_tty(struct multiboot_info* mbt);
 
 #endif /* end of include guard: KERNEL_INIT_H */

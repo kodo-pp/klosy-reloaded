@@ -8,7 +8,8 @@
 ; Declare constants for the multiboot header.
 %define FLAG_ALIGN   (1<<0)                      ; align loaded modules on page boundaries
 %define FLAG_MEMINFO (1<<1)                      ; provide memory map
-%define FLAGS        (FLAG_ALIGN | FLAG_MEMINFO) ; this is the Multiboot 'flag' field
+%define FLAG_VIDINFO (1<<2)                      ; provide memory map
+%define FLAGS        (FLAG_ALIGN | FLAG_MEMINFO | FLAG_VIDINFO) ; this is the Multiboot 'flag' field
 %define MAGIC        0x1BADB002                  ; 'magic number' lets bootloader find the header
 %define CHECKSUM     (-(MAGIC + FLAGS))          ; checksum of above, to prove we are multiboot
 
@@ -28,6 +29,9 @@ dd MAGIC
 dd FLAGS
 dd CHECKSUM
 
+dd 0, 0, 0, 0, 0
+dd 0
+dd 1024, 768, 32
 
 ;The multiboot standard does not define the value of the stack pointer register
 ;(esp) and it is up to the kernel to provide a stack. This allocates room for a

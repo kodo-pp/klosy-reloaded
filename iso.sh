@@ -22,7 +22,8 @@ echo "  -> Building GRUB config..."
 
 cat > grub.cfg << EOF
 menuentry "Klosy Reloaded" {
-	multiboot /klosy-reloaded.elf
+    insmod all_video
+    multiboot /klosy-reloaded.elf
     module /klosy-initrd.tar
 }
 EOF
