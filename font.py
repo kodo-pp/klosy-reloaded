@@ -29,7 +29,7 @@ def main():
     split_raw_font = [i.split() for i in raw_font]
     del raw_font
     
-    font_array = [[to_byte(i).to_bytes(1, 'little') for i in j] for j in split_raw_font] 
+    font_array = [reversed([to_byte(i).to_bytes(1, 'little') for i in j]) for j in split_raw_font] 
 
     font = b''
     for i in font_array:

@@ -27,7 +27,7 @@ void vesa_put_pixel(int y, int x, uint8_t red, uint8_t green, uint8_t blue)
     location[base_pos + 2] = red;
 }
 
-void vesa_put_pixel_faster(void* where, uint8_t red, uint8_t green, uint8_t blue)
+void vesa_put_pixel_faster(void* where, uint32_t color)
 {
     size_t where_offset       = reinterpret_cast <size_t> (where);
     size_t framebuffer_offset = reinterpret_cast <size_t> (vesa::framebuffer);
@@ -38,6 +38,9 @@ void vesa_put_pixel_faster(void* where, uint8_t red, uint8_t green, uint8_t blue
     }
 
     auto location = static_cast <uint8_t*> (where);
+    uint8_t blue = color & 0xFF;
+    uint8_t green = (color & 0xFF00) >> 8;
+    uint8_t red = (color & 0xFF0000) >> 16;
     location[0] = blue; 
     location[1] = green; 
     location[2] = red; 
@@ -59,3 +62,9 @@ void* vesa_locate(size_t y, size_t x)
 {
     return static_cast <uint8_t*> (vesa::framebuffer) + (y * vesa::pitch + x * vesa::bytespp);
 }
+
+size_t vesa_get_width()  { return vesa::width;       } 
+size_t vesa_get_height() { return vesa::height;      }
+size_t vesa_get_pitch()  { return vesa::pitch;       }
+size_t vesa_get_bpp()    { return vesa::bytespp * 8; }
+void* vesa_get_framebuffer() { return vesa::framebuffer; }

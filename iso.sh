@@ -31,7 +31,7 @@ EOF
 
 cd ../../..
 ./initrd.sh
-mv initrd.tar "${iso_tmp_dir}"/klosy-initrd.tar
+cp initrd.tar "${iso_tmp_dir}"/klosy-initrd.tar
 
 echo "==> Creating bootable ISO image..."
 grub-mkrescue -o "${iso_name}" "${iso_tmp_dir}" 2>/dev/null

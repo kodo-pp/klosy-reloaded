@@ -3,6 +3,7 @@
 
 #include <kernel/vgatty.h>
 #include <kernel/vesa.hpp>
+#include <kernel/vesa_tty.hpp>
 #include <kernel/tty.h>
 #include <kernel/init.h>
 #include <kernel/power.h>
@@ -35,14 +36,16 @@ int init_tty(struct multiboot_info* mbt)
         init_vgatty();
     } else if (mbt->framebuffer_type == 1) {
         init_vesa(mbt);
-        //vesa_tty_init();
+        vesa_tty_init(mbt);
+        /*
         for (int i = 0; i < 1024; ++i) {
             for (int j = 0; j < 1080; ++j) {
-                vesa_put_pixel(i, j, i % 256, j % 256, (i * j) % 256);
+                vesa_put_pixel(i, j, i * 256 / 1024, j * 256 / 1080, (i + j) % 256);
             }
         }
 
         halt();
+        */
     }
     return 0;
 }
