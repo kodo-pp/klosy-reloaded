@@ -5,10 +5,11 @@
 #include <kernel/power.h>
 #include <kernel/vgatty.h>
 #include <kcdefines.h>
+#include <stdio.h>
 
 NORETURN void panic(const char* message)
 {
-    vgatty_putstr("Kernel panic: ");
-    vgatty_putstr(message);
+    writes("Kernel panic: ");
+    writes(message);
     halt();
 }
