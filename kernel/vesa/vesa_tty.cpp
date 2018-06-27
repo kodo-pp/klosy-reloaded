@@ -84,7 +84,7 @@ static void vesa_tty_scroll()
     void* second_line = static_cast <uint8_t*> (framebuffer) + vesa_get_pitch() * vesa_tty::font_height; 
     memmove_fast(framebuffer, second_line, size);
 
-    vesa_tty_setposition(vesa_get_height() - 1, 0);
+    //vesa_tty_setposition(vesa_get_height() - 1, 0);
 }
 
 template <typename Int>
@@ -111,25 +111,27 @@ void vesa_tty_putchar(char ch)
     uint8_t* framebuffer = static_cast <uint8_t*> (vesa_get_framebuffer());
     UNUSED uint8_t* where = framebuffer
                      + pitch * vesa_tty::font_height * vesa_tty::row
-                     + bpp   * vesa_tty::font_width  * vesa_tty::col;
+                     + bpp/8 * vesa_tty::font_width  * vesa_tty::col;
     int bit = 63;
     kernel_assert(vesa_tty::font_height == 8);
     kernel_assert(vesa_tty::font_width == 8);
 
     /* Faster but untested */
-    /*
+    
     for (int i = 0; i < vesa_tty::font_height; ++i) {
         auto prev_where = where;
         for (int j = 0; j < vesa_tty::font_width; ++j) {
-            vesa_put_pixel_faster(where, getbit(glyph, bit) ? vesa_tty::fgcolor : vesa_tty::bgcolor);
+            vesa_put_pixel_faster(where, getbit(glyph, bit) ? vesa_tty::fg_color : vesa_tty::bg_color);
             where += bpp / 8;
             --bit;
         }
         where = prev_where + pitch;
     }
-    */
+    ++vesa_tty::col;
+    
 
     /* Slower but more reliable */
+    /*
     for (int i = 0; i < vesa_tty::font_height; ++i) {
         for (int j = 0; j < vesa_tty::font_width; ++j) {
             uint8_t red   = ((getbit(glyph, bit) ? vesa_tty::fg_color : vesa_tty::bg_color) & 0xFF0000) >> 16;
@@ -140,6 +142,7 @@ void vesa_tty_putchar(char ch)
         }
     }
     ++vesa_tty::col;
+    */
 
     //auto width = vesa_get_width() / vesa_tty::font_width;
     //auto height = vesa_get_height() / vesa_tty::font_height;
