@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <memops.h>
+#include <convert.h>
 
 #include <kcdefines.h>
 #include <util.h>
@@ -19,6 +20,9 @@ namespace vesa_tty
     static int fg_color = 0xa0a0a0;
     static int bg_color = 0x000000;
     static void* font;
+
+    static kstd::string* status;
+    static bool ready = true;
 }
 
 /* INITIALIZATION FUNCTIONS */
@@ -50,6 +54,8 @@ void vesa_tty_init(struct multiboot_info* mbt)
     }
 
     memcpy(vesa_tty::font, font.c_str(), 8 * 256);
+
+    vesa_tty::status = new kstd::string;
 
     struct tty t;
     t.write_func = vesa_tty_write;
@@ -93,8 +99,91 @@ static inline bool getbit(Int n, int bit)
     return (n & (1ULL << bit)) > 0;
 }
 
+static size_t vesa_tty_get_argc(char cmd)
+{
+    switch (cmd) {
+        case '*': return 2; // 4-bit color, bg and fg, hex
+        case '#': return 7; // 24-bit color, bg or fg, hex, last is bg(.) or fg(!)
+        default:  return 0;
+    }
+}
+
+static void vesa_tty_command_color4x4(const kstd::string& str)
+{
+    kernel_assert(str.length() - 2 >= 2);
+    char bgcolor4 = str.at(2 + 0);
+    char fgcolor4 = str.at(2 + 1);
+
+    uint32_t bgcolor = vesa_hexchar_to_color(bgcolor4);
+    uint32_t fgcolor = vesa_hexchar_to_color(fgcolor4);
+
+    vesa_tty::bg_color = bgcolor;
+    vesa_tty::fg_color = fgcolor;
+}
+
+static void vesa_tty_command_color24(const kstd::string& str)
+{
+    kernel_assert(str.length() - 2 >= 7);
+    kstd::string color_str;
+    for (int i = 0; i < 6; ++i) {
+        color_str.push_back(str.at(2 + i));
+    }
+
+    uint32_t color = str_to_uint_base(color_str.c_str(), 16);
+
+    if (str.at(2 + 6) == '.') {
+        vesa_tty::bg_color = color;
+    } else if(str.at(2 + 6) == '!') {
+        vesa_tty::fg_color = color;
+    }
+}
+
+static void vesa_tty_run_command(const kstd::string& str)
+{
+    char cmd = str.at(1);
+    switch (cmd) {
+        case '*': vesa_tty_command_color4x4(str); break;
+        case '#': vesa_tty_command_color24(str);  break;
+    }
+}
+
 void vesa_tty_putchar(char ch)
 {
+    if (vesa_tty::ready) {
+        vesa_tty::ready = false;
+        if (vesa_tty::status->length() > 1) {
+            // Command argument
+            char cmd = vesa_tty::status->at(1);
+            size_t argc = vesa_tty_get_argc(cmd);
+
+            vesa_tty::status->push_back(ch);
+            if (vesa_tty::status->length() - 2 >= argc) {
+                vesa_tty_run_command(*vesa_tty::status);
+                *vesa_tty::status = "";
+            }
+            vesa_tty::ready = true;
+            return;
+        } else if (vesa_tty::status->length() == 1) {
+            // Command
+            vesa_tty::status->push_back(ch);
+            if (vesa_tty_get_argc(ch) == 0) {
+                vesa_tty_run_command(*vesa_tty::status);
+                *vesa_tty::status = "";
+            }
+            vesa_tty::ready = true;
+            return;
+        }
+
+        if (ch == '\x1b') {
+            // Command marker
+            vesa_tty::status->push_back('\x1b');
+            vesa_tty::ready = true;
+            return;
+        }
+
+        vesa_tty::ready = true;
+    }
+
     if (ch == '\n') {
         vesa_tty::col = 0;
         ++vesa_tty::row;

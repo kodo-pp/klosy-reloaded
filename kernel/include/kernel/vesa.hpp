@@ -27,4 +27,6 @@ size_t vesa_get_height();
 size_t vesa_get_pitch();
 size_t vesa_get_bpp();
 
+uint32_t vesa_hexchar_to_color(char hexchar);
+
 #endif // end of include guard: KERNEL_VESA_HPP

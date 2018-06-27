@@ -82,6 +82,8 @@ extern "C" void kmain(struct multiboot_info* mbt)
         }
     }
 
+    printf("Testing %s24-bit%s %scolor%s\n", "\x1b#ABBA62!", "\x1b#471814!", "\x1b#205000.", "\x1b#222222.");
+
     puts("System initialized, awaiting for user input");
     while (true) {
         idle();

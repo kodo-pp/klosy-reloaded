@@ -6,6 +6,25 @@ namespace vesa
     static void* framebuffer;
     static size_t width, height, pitch;
     static int bytespp;
+
+    uint32_t colortab[16] {
+        0x000000,
+        0x000080,
+        0x008000,
+        0x008080,
+        0x800000,
+        0x800080,
+        0x808000,
+        0x808080,
+        0x000000,
+        0x0000FF,
+        0x00FF00,
+        0x00FFFF,
+        0xFF0000,
+        0xFF00FF,
+        0xFFFF00,
+        0xFFFFFF,
+    };
 }
 
 void vesa_init(void* framebuffer, size_t width, size_t height, size_t pitch, int bpp)
@@ -68,3 +87,21 @@ size_t vesa_get_height() { return vesa::height;      }
 size_t vesa_get_pitch()  { return vesa::pitch;       }
 size_t vesa_get_bpp()    { return vesa::bytespp * 8; }
 void* vesa_get_framebuffer() { return vesa::framebuffer; }
+
+uint32_t vesa_hexchar_to_color(char hexchar)
+{
+    int idx = -1;
+    if ('0' <= hexchar && hexchar <= '9') {
+        idx = hexchar - '0';
+    } else if ('A' <= hexchar && hexchar <= 'F') {
+        idx = hexchar - 'A' + 10;
+    } else if ('a' <= hexchar && hexchar <= 'f') {
+        idx = hexchar - 'a' + 10;
+    }
+
+    if (idx == -1) {
+        return 0xBADC07;
+    } else {
+        return vesa::colortab[idx];
+    }
+}
