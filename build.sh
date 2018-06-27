@@ -4,28 +4,34 @@ kernel_name="klosy-reloaded.elf"
 
 CC="i686-elf-gcc"
 CXX="i686-elf-g++"
-# AS="i686-elf-as"
 AS="nasm"
 LD="i686-elf-gcc"
 
-CFLAGS="-Wall -Wextra -std=gnu99 -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -O0 -static-libgcc"
-CXXFLAGS="-Wall -Wextra -std=gnu++11 -pedantic -Ikernel/include -Ilibkc/include -Ilibkc++/include -ffreestanding -fno-exceptions -fno-rtti"
+CFLAGS="-std=gnu99"
+CXXFLAGS="-std=gnu++11 -Ilibkc++/include -fno-exceptions -fno-rtti"
 ASFLAGS="-I kernel/include/asm/ -f elf"
 LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib -static"
 
 LIBS="-lgcc"
 LDFLAGS="${LDFLAGS} ${LIBS}"
 
-FLAGS=""
+FLAGS="-Wall -Wextra -pedantic -Ikernel/include -Ilibkc/include -ffreestanding"
 
-# Please, don't replace 'a' with 'x' here (I mean the first character of the string)
-if [ "a${DEBUG}" == 'ayes' ]; then
+if [[ -z $KLOSY_MARCH ]]; then
+    KLOSY_MARCH='i686'
+fi
+
+echo "Building Klosy for arch ${KLOSY_MARCH}"
+FLAGS="${FLAGS} -march=${KLOSY_MARCH} -mtune=generic"
+
+if [ ".${DEBUG}" == '.yes' ]; then
     FLAGS="${FLAGS} -g"
+else
+    FLAGS="${FLAGS} -O2 -ftree-vectorize -funroll-loops -flto"  # TODO: maybe change these flags
 fi
 
 CFLAGS="${CFLAGS} ${FLAGS}"
 CXXFLAGS="${CXXFLAGS} ${FLAGS}"
-ASFLAGS="${ASFLAGS} ${FLAGS}"
 
 function run_command() {
     dump_command "$@"
