@@ -50,6 +50,9 @@ void ustar_ls(void* tarball, size_t max_size, kstd::vector < kstd::string >& des
         kstd::string magic(buf.ustar_magic, 5);
         kstd::string correct_magic("ustar", 5);
         if (magic != correct_magic) {
+            printf("USTAR: magic mismatch at i = %z\n", i);
+            printf("Expected: %x %x %x %x %x\n", 'u', 's', 't', 'a', 'r');
+            printf("Got:      %x %x %x %x %x\n", magic.at(0), magic.at(1), magic.at(2), magic.at(3), magic.at(4));
             return;
         }
         

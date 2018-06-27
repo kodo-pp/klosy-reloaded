@@ -39,13 +39,6 @@ extern "C" void kmain(struct multiboot_info* mbt)
     printf("%sMemory limit:%s %z MiB\n", "\x1b*0F", "\x1b*07", (mbt->mem_upper >> 10) + 1);
     puts("");
 
-    printf("Heap memory begins at %z (approx. %z KiB)\n", (size_t)(&heap_memory),
-           (size_t)(&heap_memory) >> 10);
-    puts("");
-
-    init_kmem(mbt->mem_upper * 1024 + 1024 * 1024);
-    puts("Memory initialized");
-
     printf("Modules count: %d\n", static_cast <int> (mbt->mods_count));
     printf("Modules addr : 0x%p\n", static_cast <size_t> (mbt->mods_addr));
 
@@ -56,9 +49,7 @@ extern "C" void kmain(struct multiboot_info* mbt)
         auto mod_list = reinterpret_cast <struct multiboot_mod_list*> (mbt->mods_addr);
         printf("Initrd begins at 0x%p\n", mod_list[0].mod_start);
         printf("Initrd ends   at 0x%p\n", mod_list[0].mod_end);
-        //printf("Initrd content:\n");
-        //write(reinterpret_cast <char*> (mod_list[0].mod_start),
-        //      mod_list[0].mod_end - mod_list[0].mod_start);
+
         kstd::vector <kstd::string> files;
         ustar_ls(reinterpret_cast <void*> (mod_list[0].mod_start),
                  mod_list[0].mod_end - mod_list[0].mod_start,
@@ -83,6 +74,7 @@ extern "C" void kmain(struct multiboot_info* mbt)
     }
 
     printf("Testing %s24-bit%s %scolor%s\n", "\x1b#ABBA62!", "\x1b#471814!", "\x1b#205000.", "\x1b#222222.");
+    printf("\x1b#000000.\x1b#FFFFFF!");
 
     puts("System initialized, awaiting for user input");
     while (true) {

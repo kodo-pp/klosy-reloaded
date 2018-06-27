@@ -6,10 +6,10 @@
 #include <kernel/multiboot.h>
 
 /** Initializes all crucial kernel modules (such as memory manager or VGA tty) */
-void init_modules(struct multiboot_info *mbt);
+void init_modules(struct multiboot_info* mbt);
 
 /** Init function. Initialize kernel memory manager. Wrapper for init_kmem() */
-int init_memory(size_t memory_limit);
+int init_memory(const struct multiboot_info* mbt, size_t memory_limit);
 
 /** Init function. Initialize terminal control module and default VGA terminal */
 int init_tty(struct multiboot_info* mbt);

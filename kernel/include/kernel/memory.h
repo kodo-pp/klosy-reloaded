@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <kernel/multiboot.h>
 
 /*
  * Minimal allocatable size
@@ -21,8 +22,8 @@
  * FUCKING VARIABLE IS THE VALUE I NEED, NOT THIS SHITTY VARIABLE ITSELF!
  * But anybody please TELL ME HOW IT FUCKING WORKED BEFORE?
  */
-extern const size_t heap_memory;
-/*extern size_t memory_limit;*/
+extern size_t heap_memory;
+// And TA-DAAA! It is not what I need
 
 void kmem_dump_uf(size_t startbi, size_t endbi);
 
@@ -41,7 +42,7 @@ void set_memory_limit(size_t lim);
 void *get_memory_limit(void);
 
 /** Performs the initialization of memory management module of kernel */
-void init_kmem(size_t mem_lim);
+void init_kmem(const struct multiboot_info* mbt, size_t mem_lim);
 
 /** Returns 1 if ptr DEFINITELY points to something which is not a function, 0 otherwise */
 int definitely_not_code(void *ptr);

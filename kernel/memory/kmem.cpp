@@ -202,9 +202,18 @@ void* get_memory_limit(void)
     return memory_limit;
 }
 
-void init_kmem(size_t mem_lim)
+void init_kmem(const struct multiboot_info* mbt, size_t mem_lim)
 {
-    heap_blocks = ALIGN(void*, &heap_memory, KMEM_BLOCK_SIZE);
+    auto mods = reinterpret_cast <struct multiboot_mod_list*> (mbt->mods_addr);
+    size_t mods_count = mbt->mods_count;
+    void* true_heap_memory = static_cast <void*> (&heap_memory);
+    for (size_t i = 0; i < mods_count; ++i) {
+        if (static_cast <size_t> (mods[i].mod_end) > reinterpret_cast <size_t> (true_heap_memory)) {
+            true_heap_memory = reinterpret_cast <void*> (mods[i].mod_end);
+        }
+    }
+    
+    heap_blocks = ALIGN(void*, true_heap_memory, KMEM_BLOCK_SIZE);
     set_memory_limit(mem_lim);
     if (memory_limit < heap_blocks) {
         vgatty_putstr("Hmm... It seems that the amount of memory usable by kernel is negative.\n");
@@ -221,6 +230,8 @@ void init_kmem(size_t mem_lim)
     }
 }
 
+
+// TODO: replace heap_memory with true_heap_memory
 int definitely_not_code(void* ptr)
 {
     if (ptr == 0) {
