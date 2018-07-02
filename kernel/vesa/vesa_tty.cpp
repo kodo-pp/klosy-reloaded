@@ -88,7 +88,7 @@ static void vesa_tty_scroll()
     size_t size = vesa_get_pitch() * (vesa_get_height() - 1);
     void* framebuffer = vesa_get_framebuffer();
     void* second_line = static_cast <uint8_t*> (framebuffer) + vesa_get_pitch() * vesa_tty::font_height; 
-    memmove_fast(framebuffer, second_line, size);
+    memmove(framebuffer, second_line, size);
 
     //vesa_tty_setposition(vesa_get_height() - 1, 0);
 }

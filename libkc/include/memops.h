@@ -16,6 +16,6 @@ void memcpy(void *dest, const void *src, size_t length);
 int memcmp(void *a, void *b, size_t length);
 
 /** Copies length bytes from src to dest. dest must have enough space. dest ans src may overlap */
-void memmove_fast(void* dest, const void* src, size_t length);
+void memmove(void* dest, const void* src, size_t length);
 
 #endif /* end of include guard: LIBKC_MEMOPS_H */
