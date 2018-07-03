@@ -92,8 +92,12 @@ static void vesa_tty_scroll()
     memmove(framebuffer, second_line, size);
     memset(last_line, 0, vesa_get_pitch() * vesa_tty::font_height);
 
+    // <magic color=black>
+    asm volatile ("":::"memory"); 
+    // </magic>
+    // Yeah, and don't touch this!
+
     vesa_flush();
-    //vesa_tty_setposition(vesa_get_height() - 1, 0);
 }
 
 template <typename Int>

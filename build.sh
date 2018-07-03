@@ -15,9 +15,12 @@ LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib -static"
 LIBS="-lgcc"
 LDFLAGS="${LDFLAGS} ${LIBS}"
 
-FLAGS="-Wall -Wextra -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -fstack-protector-all"
+FLAGS="-Wall -Wextra -pedantic -Ikernel/include -Ilibkc/include -ffreestanding"
+if [[ "${HARDENED}" != 'no' ]]; then
+    FLAGS="${FLAGS} -fstack-protector-strong"
+fi 
 
-if [[ -z $KLOSY_MARCH ]]; then
+if [[ -z ${KLOSY_MARCH} ]]; then
     KLOSY_MARCH='i686'
 fi
 
@@ -27,7 +30,7 @@ FLAGS="${FLAGS} -march=${KLOSY_MARCH} -mtune=generic"
 if [ ".${DEBUG}" == '.yes' ]; then
     FLAGS="${FLAGS} -g -Og"
 else
-    FLAGS="${FLAGS} -O2 -funroll-loops -ftree-vectorize -flto"  # TODO: maybe change these flags
+    FLAGS="${FLAGS} -O2 -g -funroll-loops -ftree-vectorize"  # TODO: maybe change these flags
 fi
 
 CFLAGS="${CFLAGS} ${FLAGS}"
