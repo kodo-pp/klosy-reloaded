@@ -21,6 +21,14 @@ uint32_t vesa_make_color(uint8_t red, uint8_t green, uint8_t blue);
 // Make a pointer to specified framebuffer location
 void* vesa_locate(size_t y, size_t x);
 
+extern "C" {
+    // Flush rectangle in videomem to real framebuffer
+    void vesa_flush_rect(size_t left, size_t top, size_t width, size_t height);
+    
+    // Flush all changed videomem to real framebuffer
+    void vesa_flush();
+}
+
 void*  vesa_get_framebuffer();
 size_t vesa_get_width();
 size_t vesa_get_height();

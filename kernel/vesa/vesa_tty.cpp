@@ -85,11 +85,14 @@ static size_t vesa_tty_width() { return vesa_get_width() / vesa_tty::font_width;
 
 static void vesa_tty_scroll()
 {
-    size_t size = vesa_get_pitch() * (vesa_get_height() - 1);
+    size_t size = vesa_get_pitch() * (vesa_get_height() - vesa_tty::font_height);
     void* framebuffer = vesa_get_framebuffer();
     void* second_line = static_cast <uint8_t*> (framebuffer) + vesa_get_pitch() * vesa_tty::font_height; 
+    volatile void* last_line = static_cast <volatile uint8_t*> (framebuffer) + vesa_get_pitch() * (vesa_get_height() - vesa_tty::font_height);
     memmove(framebuffer, second_line, size);
+    memset(last_line, 0, vesa_get_pitch() * vesa_tty::font_height);
 
+    vesa_flush();
     //vesa_tty_setposition(vesa_get_height() - 1, 0);
 }
 
@@ -216,8 +219,13 @@ void vesa_tty_putchar(char ch)
         }
         where = prev_where + pitch;
     }
+    vesa_flush_rect(vesa_tty::font_width * vesa_tty::col,
+                    vesa_tty::font_height * vesa_tty::row,
+                    vesa_tty::font_width,
+                    vesa_tty::font_height);
+
     ++vesa_tty::col;
-    
+
 
     /* Slower but more reliable */
     /*

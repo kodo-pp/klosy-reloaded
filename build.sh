@@ -15,7 +15,7 @@ LDFLAGS="-T kernel/linker.ld -ffreestanding -O2 -nostdlib -static"
 LIBS="-lgcc"
 LDFLAGS="${LDFLAGS} ${LIBS}"
 
-FLAGS="-Wall -Wextra -pedantic -Ikernel/include -Ilibkc/include -ffreestanding"
+FLAGS="-Wall -Wextra -pedantic -Ikernel/include -Ilibkc/include -ffreestanding -fstack-protector-all"
 
 if [[ -z $KLOSY_MARCH ]]; then
     KLOSY_MARCH='i686'
@@ -25,9 +25,9 @@ echo "Building Klosy for arch ${KLOSY_MARCH}"
 FLAGS="${FLAGS} -march=${KLOSY_MARCH} -mtune=generic"
 
 if [ ".${DEBUG}" == '.yes' ]; then
-    FLAGS="${FLAGS} -g"
+    FLAGS="${FLAGS} -g -Og"
 else
-    FLAGS="${FLAGS} -O2 -ftree-vectorize -funroll-loops -flto"  # TODO: maybe change these flags
+    FLAGS="${FLAGS} -O2 -funroll-loops -ftree-vectorize -flto"  # TODO: maybe change these flags
 fi
 
 CFLAGS="${CFLAGS} ${FLAGS}"

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-QEMU_PARAMS="-m 256"
+QEMU_PARAMS="-m 256 -s"
 
 iso_name="klosy-reloaded.iso"
 
 # Please, don't replace 'a' with 'x' here (I mean the first character of the string)
 if [ "a${DEBUG}" == 'ayes' ]; then
-    QEMU_PARAMS="${QEMU_PARAMS} -s"
+    QEMU_PARAMS="${QEMU_PARAMS}"
 fi
 
 if [ "x$1" == "x-f" ] || ! [ -f "${iso_name}" ]; then

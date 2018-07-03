@@ -7,15 +7,15 @@
  */
 
 /** Fills each byte of specified memory range with fill & 0xFF */
-void memset(void *begin, int fill, size_t length);
+void memset(volatile void *begin, uint8_t fill, size_t length);
 
 /** Copies length bytes from src to dest. dest must have enough space. dest ans src must not overlap */
-void memcpy(void *dest, const void *src, size_t length);
+void memcpy(volatile void *dest, const void *src, size_t length);
 
 /** Compares memory chunks. Returns -1 if a < b, 0 if a == b, 1 if a > b */
 int memcmp(void *a, void *b, size_t length);
 
 /** Copies length bytes from src to dest. dest must have enough space. dest ans src may overlap */
-void memmove(void* dest, const void* src, size_t length);
+void memmove(volatile void* dest, const void* src, size_t length);
 
 #endif /* end of include guard: LIBKC_MEMOPS_H */

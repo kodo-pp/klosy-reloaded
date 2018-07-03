@@ -2,11 +2,11 @@
 #include <stddef.h>
 #include <memops.h>
 
-extern "C" void memcpy_fast(void* dest, const void* src, size_t length);
+extern "C" void memcpy_fast(volatile void* dest, const void* src, size_t length);
 
-void memcpy(void* dest, const void* src, size_t length)
+void memcpy(volatile void* dest, const void* src, size_t length)
 {
-    uint8_t* udest = (uint8_t*)dest;
+    volatile uint8_t* udest = (volatile uint8_t*)dest;
     uint8_t* usrc = (uint8_t*)src;
 
     size_t ndest = reinterpret_cast <size_t> (dest);
