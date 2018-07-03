@@ -17,3 +17,4 @@ core.*
 *.bin
 
 *.tar
+.clang-complete
