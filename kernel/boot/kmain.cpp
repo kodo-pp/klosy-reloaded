@@ -16,6 +16,11 @@
 #include <vector.hpp>
 #include <string.hpp>
 #include <kernel/fs/tar.h>
+#include <buffer.hpp>
+
+#include <kernel/keyboard.hpp>
+
+extern kstd::buffer <char> keyboard_buffer;
 
 /**
  * Entry point to high-level part of kernel
@@ -77,7 +82,24 @@ extern "C" void kmain(struct multiboot_info* mbt)
     printf("\x1b#000000.\x1b#FFFFFF!");
 
     puts("System initialized, awaiting for user input");
+//    while (true) {
+//        idle();
+//    }
+    
     while (true) {
-        idle();
+        char ch;
+        keyboard_buffer.read(&ch, 1);
+
+        uint8_t scancode = static_cast <uint8_t> (ch);
+        uint32_t key = key_translate(scancode);
+        if ((key & NO_KEY) == 0) {
+            char c = static_cast <char> (key);
+            printf("%c", c);
+        } else {
+            if ((key & RELEASED) == 0) {
+                //printf("unknown scancode: %u\n", scancode);
+            }
+        }
+        keyboard_buffer.trim();
     }
 }

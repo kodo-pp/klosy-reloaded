@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <memops.h>
 #include <kcdefines.h>
+#include <buffer.hpp>
+
+kstd::buffer <char> keyboard_buffer;
 
 struct idt_entry IDT[IDT_SIZE];
 
@@ -39,7 +42,9 @@ struct idt_entry make_idt_entry(uint32_t offset, UNUSED uint8_t dpl)
 extern "C" void keyboard_handler(void)
 {
     uint8_t scancode = inb(0x60);
-    printf("Got scancode: %d\n", (int)scancode);
+    //printf("Got scancode: %d\n", (int)scancode);
+    char ch = static_cast <char> (scancode);
+    keyboard_buffer.write(&ch, 1);
 }
 
 static void init_keyboard_idt(void)

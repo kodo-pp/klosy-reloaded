@@ -128,6 +128,66 @@ static void vesa_tty_command_color4x4(const kstd::string& str)
     vesa_tty::fg_color = fgcolor;
 }
 
+static void vesa_tty_update_cursor()
+{
+    uint64_t glyph = 0x000000000000FFFFull;
+    auto pitch = vesa_get_pitch();
+    auto bpp = vesa_get_bpp();
+    uint8_t* framebuffer = static_cast <uint8_t*> (vesa_get_framebuffer());
+    UNUSED uint8_t* where = framebuffer
+                     + pitch * vesa_tty::font_height * vesa_tty::row
+                     + bpp/8 * vesa_tty::font_width  * vesa_tty::col;
+    int bit = 63;
+    kernel_assert(vesa_tty::font_height == 8);
+    kernel_assert(vesa_tty::font_width == 8);
+
+    /* Faster but untested */
+    
+    for (int i = 0; i < vesa_tty::font_height; ++i) {
+        auto prev_where = where;
+        for (int j = 0; j < vesa_tty::font_width; ++j) {
+            vesa_put_pixel_faster(where, getbit(glyph, bit) ? vesa_tty::fg_color : vesa_tty::bg_color);
+            where += bpp / 8;
+            --bit;
+        }
+        where = prev_where + pitch;
+    }
+    vesa_flush_rect(vesa_tty::font_width * vesa_tty::col,
+                    vesa_tty::font_height * vesa_tty::row,
+                    vesa_tty::font_width,
+                    vesa_tty::font_height);
+}
+
+static void vesa_tty_clear_cursor()
+{
+    uint64_t glyph = 0x0000000000000000ull;
+    auto pitch = vesa_get_pitch();
+    auto bpp = vesa_get_bpp();
+    uint8_t* framebuffer = static_cast <uint8_t*> (vesa_get_framebuffer());
+    UNUSED uint8_t* where = framebuffer
+                     + pitch * vesa_tty::font_height * vesa_tty::row
+                     + bpp/8 * vesa_tty::font_width  * vesa_tty::col;
+    int bit = 63;
+    kernel_assert(vesa_tty::font_height == 8);
+    kernel_assert(vesa_tty::font_width == 8);
+
+    /* Faster but untested */
+    
+    for (int i = 0; i < vesa_tty::font_height; ++i) {
+        auto prev_where = where;
+        for (int j = 0; j < vesa_tty::font_width; ++j) {
+            vesa_put_pixel_faster(where, getbit(glyph, bit) ? vesa_tty::fg_color : vesa_tty::bg_color);
+            where += bpp / 8;
+            --bit;
+        }
+        where = prev_where + pitch;
+    }
+    vesa_flush_rect(vesa_tty::font_width * vesa_tty::col,
+                    vesa_tty::font_height * vesa_tty::row,
+                    vesa_tty::font_width,
+                    vesa_tty::font_height);
+}
+
 static void vesa_tty_command_color24(const kstd::string& str)
 {
     kernel_assert(str.length() - 2 >= 7);
@@ -192,12 +252,16 @@ void vesa_tty_putchar(char ch)
     }
 
     if (ch == '\n') {
+        if (vesa_tty::col + 1 < vesa_tty_width()) {
+            vesa_tty_clear_cursor();
+        }
         vesa_tty::col = 0;
         ++vesa_tty::row;
         if (vesa_tty::row >= vesa_tty_height()) {
             --vesa_tty::row;
             vesa_tty_scroll();
         }
+        vesa_tty_update_cursor();
         return;
     }
     uint64_t glyph = static_cast <uint64_t*> (vesa_tty::font)[static_cast <uint8_t> (ch)];
@@ -259,6 +323,7 @@ void vesa_tty_putchar(char ch)
             vesa_tty_scroll();
         }
     }
+    vesa_tty_update_cursor();
 }
 
 void vesa_tty_setfgcolor(uint32_t color)
